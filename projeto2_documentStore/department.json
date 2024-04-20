@@ -1,0 +1,62 @@
+{
+    "name": "Biology",
+    "building": "Watson",
+    "budget": "90000",
+    "courses": [
+        "66219c73bd365689c781187b",
+        "66219c73bd365689c781187c",
+        "66219c73bd365689c781187d"
+    ]
+}
+{
+    "name": "Comp. Sci.",
+    "building": "Taylor",
+    "budget": "100000",
+    "courses": [
+        "66219c73bd365689c781187e",
+        "66219c73bd365689c781187f",
+        "66219c73bd365689c7811880",
+        "66219c73bd365689c7811881",
+        "66219c73bd365689c7811882"
+    ]
+}
+{
+    "name": "Elec. Eng.",
+    "building": "Taylor",
+    "budget": "85000",
+    "courses": [
+        "66219c73bd365689c7811883"
+    ]
+}
+{
+    "name": "Finance",
+    "building": "Painter",
+    "budget": "120000",
+    "courses": [
+        "66219c73bd365689c7811884"
+    ]
+}
+{
+    "name": "History",
+    "building": "Painter",
+    "budget": "50000",
+    "courses": [
+        "66219c73bd365689c7811885"
+    ]
+}
+{
+    "name": "Music",
+    "building": "Packard",
+    "budget": "80000",
+    "courses": [
+        "66219c73bd365689c7811886"
+    ]
+}
+{
+    "name": "Physics",
+    "building": "Watson",
+    "budget": "70000",
+    "courses": [
+        "66219c73bd365689c7811887"
+    ]
+}

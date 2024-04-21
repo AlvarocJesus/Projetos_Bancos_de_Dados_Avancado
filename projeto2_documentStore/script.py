@@ -109,16 +109,38 @@ def questao1():
         print(f"Deu errado {e}")
 
 # 2. Recuperar todas as disciplinas de um curso específico em um determinado semestre
-def questao2():
+def questao2(course, semester):
     try:
-        semestres = db
-        for semestre in semestres:
-            cursos = db
-            for curso in cursos:
-                disciplinas = db
-                for disciplina in disciplinas:
-                    print(f'Disciplina: {disciplina} do curso de {curso} no semestre {semestre}')
+        deleteDataMongoDB('section')
+
+        section = getDataSQLDB('select * from section;')
+
+        sectionMongo = []
+
+        for sec in section:
+            sectionMongo.append({
+                "course_id": sec[0],
+                "sec_id": sec[1],
+                "semester": sec[2],
+                "year": sec[3],
+                "building": sec[4],
+                "room_number": sec[5],
+                "time_slot_id": sec[6]
+            })
+        
+        db.section.insert_many(sectionMongo)
+
+        sectionsMongo = db.section.find({
+            '$or': [
+                { "course_id": course },
+                { "semester": semester }
+            ]
+        })
+        print(sectionsMongo)
+        for section in sectionsMongo:
+            print(f'Course ID: {section["course_id"]}\tSection ID: {section["sec_id"]}\tSemester: {section["semester"]}\tYear: {section["year"]}\tBuilding: {section["building"]}\tRoom Number: {section["room_number"]}\tTime Slot ID: {section["time_slot_id"]}')
     except Exception as e:
         print(f'Deu ruim: {e}')
 
-questao1()
+# questao1()
+questao2("BIO-101", "Summer")

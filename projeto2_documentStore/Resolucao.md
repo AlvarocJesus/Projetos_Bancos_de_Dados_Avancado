@@ -28,7 +28,7 @@ cursos: { ObjectId: 1 }
 semestre: {
   cursos: [
     {
-        disciplinas: [
+      disciplinas: [
         {
           ObjectId: 1,
         }

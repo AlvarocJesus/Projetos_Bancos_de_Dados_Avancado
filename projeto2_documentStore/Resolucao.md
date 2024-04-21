@@ -68,16 +68,16 @@ alunos: {
 
 ```txt
 departamentos: {
-professores: [
-{
-ObjectId: 1
-}
-]
+  professores: [
+    {
+      ObjectId: 1
+    }
+  ]
 }
 
 professores: {
-ObjectId: 1,
-salario: 1000
+  ObjectId: 1,
+  salario: 1000
 }
 ```
 
@@ -85,10 +85,10 @@ salario: 1000
 
 ```txt
 estudantes: [
-{
-ObjectId: 1,
-creditos: 100
-}
+  {
+    ObjectId: 1,
+    creditos: 100
+  }
 ]
 ```
 
@@ -96,12 +96,15 @@ creditos: 100
 
 ```txt
 semestre: {
-professor: [
-disciplinas: [
-{
-ObjectId: 1
-}
-]
+  professor: [
+    {
+      disciplinas: [
+        {
+          ObjectId: 1
+        }
+      ]
+    }
+  ]
 }
 
 professores: {}
@@ -115,15 +118,15 @@ cursos: {}
 
 ```txt
 professores: {
-alunos: [
-{
-ObjectId: 1
-}
-]
+  alunos: [
+    {
+      ObjectId: 1
+    }
+  ]
 }
 
 alunos: {
-ObjectId: 1
+  ObjectId: 1
 }
 ```
 
@@ -131,15 +134,15 @@ ObjectId: 1
 
 ```txt
 salas: {
-cursos: [
-{
-ObjectId: 1
-}
-]
+  cursos: [
+    {
+      ObjectId: 1
+    }
+  ]
 }
 
 cursos: {
-ObjectId: 1
+  ObjectId: 1
 }
 ```
 
@@ -147,15 +150,15 @@ ObjectId: 1
 
 ```txt
 cursos: {
-pre_requisitos: [
-{
-ObjectId: 1
-}
-]
+  pre_requisitos: [
+    {
+      ObjectId: 1
+    }
+  ]
 }
 
 pre_requisitos: {
-ObjectId: 1
+  ObjectId: 1
 }
 ```
 
@@ -163,14 +166,14 @@ ObjectId: 1
 
 ```txt
 professores: {
-alunos: [
-{
-ObjectId: 1
-}
-]
+  alunos: [
+    {
+      ObjectId: 1
+    }
+  ]
 }
 
 alunos: {
-ObjectId: 1
+  ObjectId: 1
 }
 ```

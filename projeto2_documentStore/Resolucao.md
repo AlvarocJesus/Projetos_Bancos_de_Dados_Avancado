@@ -6,34 +6,45 @@ username: alvimcoelhojesus
 password: Wz5wyAvFghP6DCPs
 mongodb+srv://alvimcoelhojesus:<password>@projeto2documentstore.bv2jjzy.mongodb.net/
 
-## 1. Listar todos os cursos oferecidos por um determinado departamento
+## 1. Listar todos os cursos oferecidos por um determinado departamento - OK
 
 mongo.db.departamentos.find({ columnName: cursos })
-departamnetos: { cursos: [ { ObjectId: 1, } ] }
+
+```txt
+departamnetos: {
+  cursos: [
+    {
+      ObjectId: 1,
+    }
+  ]
+}
 
 cursos: { ObjectId: 1 }
+```
 
 ## 2. Recuperar todas as disciplinas de um curso específico em um determinado semestre
 
+```txt
 semestre: {
-cursos: [
-{
-disciplinas: [
-{
-ObjectId: 1,
-}
-]
-}
-]
+  cursos: [
+    {
+        disciplinas: [
+        {
+          ObjectId: 1,
+        }
+      ]
+    }
+  ]
 }
 
 cursos: {
-ObjectId: 1,
+  ObjectId: 1,
 }
 
 disciplinas: {
-ObjectId: 1
+  ObjectId: 1
 }
+```
 
 ## 3. Encontrar todos os estudantes que estão matriculados em um curso específico
 

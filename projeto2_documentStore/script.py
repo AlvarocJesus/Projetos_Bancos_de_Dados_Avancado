@@ -46,46 +46,65 @@ def getDataSQLDB(query):
     except Exception as e:
         print(f"Deu errado {e}")
 
+def deleteDataMongoDB(collection):
+    """
+    db.course.delete_many({
+        "course_id": { "$exists": True }
+    })
+    db.department.delete_many({
+        "dept_name": { "$exists": True }
+    })
+    """
+    try:
+        db[collection].delete_many({})
+    except Exception as e:
+        print(f"Deu errado {e}")
+
 # 1. Listar todos os cursos oferecidos por um determinado departamento
 def questao1():
     try:
+        # Deleta todos os cursos e departamentos do mongodb
+        deleteDataMongoDB('course')
+        deleteDataMongoDB('department')
+        
         # busca no sql e insere no mongodb os cursos - OK
+        cursosMongo = []
         cursos = getDataSQLDB('select * from course;')
-        print('Cursos SQL')
-        print(cursos)
-        teste = db.course.insert_many(cursos)
-        print('Cursos MongoDB')
-        print(teste)
-        print(f'inserted_ids: {teste.inserted_ids}')
+
+        for curso in cursos:
+            cursosMongo.append({
+                "course_id": curso[0],
+                "title": curso[1],
+                "dept_name": curso[2],
+                "credits": curso[3]
+            })
+
+        db.course.insert_many(cursosMongo)
+        
         # busca no sql e insere no mongodb os departamentos
-        """ departamentos = getDataSQLDB(
-            select * from department d 
-            inner join course c on d.dept_name = c.dept_name
-            order by d.dept_name;
-        )
+        departamentos = getDataSQLDB('select * from department;')
 
         departamentosFormatado = []
-        for departamento in range(len(departamentos)):
-            print(departamentos[departamento])
+        for departamento in departamentos:
+            cursosID = [cursoMongo['_id'] for cursoMongo in cursosMongo if cursoMongo['dept_name'] == departamento[0]]
 
-            if departamentos[departamento] == cursos[departamento].dept_name:
-                departamentosFormatado.append({
-                    "dept_name": departamentos[departamento][0],
-                    "building": departamentos[departamento][1],
-                    "budget": departamentos[departamento][2],
-                    "courses": [cursos[departamento]._id]
-                })
+            departamentosFormatado.append({
+                "dept_name": departamento[0],
+                "building": departamento[1],
+                "budget": departamento[2],
+                "courses": cursosID
+            })
+        
+        db.department.insert_many(departamentosFormatado)
 
-        # db.course.insert_many(departamentosFormatado) """
-
-
-
-        # departamento = db.department.find({}, { "_id": 0, "name": 1, "courses": 2 })
-        # for depart in departamento:
-        #     for cursoId in depart['courses']:
-        #         cursos = db.course.find({ "_id": ObjectId(cursoId) }, { "_id": 0, "course_id": 1, "title": 2  })
-        #         for curso in cursos:
-        #             print(f'Departamento: {depart["name"]}\tID do curso: {curso["course_id"]}\tNome do curso: {curso["title"]}')
+        # busca no mongodb os departamentos e cursos
+        departamento = db.department.find({})
+        
+        for depart in departamento:
+            for cursoId in depart['courses']:
+                cursos = db.course.find({ "_id": ObjectId(cursoId) })
+                for curso in cursos:
+                    print(f'Departamento: {depart["dept_name"]}\tID do curso: {curso["course_id"]}\tNome do curso: {curso["title"]}')
     except Exception as e:
         print(f"Deu errado {e}")
 

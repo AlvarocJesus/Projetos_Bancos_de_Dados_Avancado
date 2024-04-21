@@ -1,6 +1,10 @@
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, insert, select, text
+from sqlalchemy.orm import relationship, sessionmaker, declarative_base
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Float
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
+
 
 uri = "mongodb+srv://alvimcoelhojesus:Wz5wyAvFghP6DCPs@projeto2documentstore.bv2jjzy.mongodb.net/?retryWrites=true&w=majority&appName=Projeto2DocumentStore"
 
@@ -16,20 +20,57 @@ try:
 except Exception as e:
     print(e)
 
+
+# Realiza o select no banco de dados SQL
+def getDataSQLDB(query):
+    try:
+        # Cria uma conexão com o banco de dados
+        engine = create_engine('postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie', echo=True)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        # Cria um cursor para executar as queries
+        conn = engine.connect()
+        
+        # Executa a query
+        data = conn.execute(text(query)).all()
+        
+        # Fecha a conexão
+        session.close()
+        
+        return data
+    except Exception as e:
+        print(f"Deu errado {e}")
+
 # 1. Listar todos os cursos oferecidos por um determinado departamento
-# SQL
-"""
-select
-  *
-  -- d.*,
-  -- c.id as courses
-from department d
-inner join course c on d.dept_name = c.dept_name
---order by d.dept_name
-group by 1
-"""
 def questao1():
     try:
+        # busca cursos
+        cursos = getDataSQLDB('select * from course;')
+        db.course.insert_many(cursos)
+        # busca cursos
+        departamentos = getDataSQLDB("""
+            select * from department d 
+            inner join course c on d.dept_name = c.dept_name
+            order by d.dept_name;
+        """)
+
+        departamentosFormatado = []
+        for departamento in range(len(departamentos)):
+            print(departamentos[departamento])
+
+            """ if departamentos[departamento] == cursos[departamento].dept_name:
+                departamentosFormatado.append({
+                    "dept_name": departamentos[departamento][0],
+                    "building": departamentos[departamento][1],
+                    "budget": departamentos[departamento][2],
+                    "courses": [cursos[departamento]._id]
+                }) """
+
+        # db.course.insert_many(departamentosFormatado)
+
+
+
         departamento = db.department.find({}, { "_id": 0, "name": 1, "courses": 2 })
         for depart in departamento:
             for cursoId in depart['courses']:

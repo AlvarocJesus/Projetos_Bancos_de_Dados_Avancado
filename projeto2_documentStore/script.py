@@ -5,9 +5,6 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 
-# username = 'professor'
-# password = 'FgEp9W9qKAuaAodE'
-
 username = 'alvimcoelhojesus'
 password = 'Wz5wyAvFghP6DCPs'
 uri = f"mongodb+srv://{username}:{password}@projeto2documentstore.bv2jjzy.mongodb.net/?retryWrites=true&w=majority&appName=Projeto2DocumentStore"
@@ -15,7 +12,6 @@ uri = f"mongodb+srv://{username}:{password}@projeto2documentstore.bv2jjzy.mongod
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.projeto2
-# print(client.list_database_names())
 
 # Send a ping to confirm a successful connection
 try:
@@ -23,7 +19,6 @@ try:
 	print("Pinged your deployment. You successfully connected to MongoDB!\n")
 except Exception as e:
 	print(e)
-
 
 # Realiza o select no banco de dados SQL
 def getDataSQLDB(query):
@@ -185,6 +180,74 @@ def questao3(nomeCurso):
 	except Exception as e:
 		print(f'Deu ruim: {e}')
 
+# 10. Recuperar a quantidade de alunos orientados por cada professor
+def questao10():
+	try:
+		# remove os dados de alunos e professores do mongoDB
+		deleteDataMongoDB('student')
+		deleteDataMongoDB('instructor')
+    
+    # busca os dados de alunos no SQL
+		alunosSQL = getDataSQLDB('select * from student;')
+		print('\n----------Alunos SQL----------')
+		print(alunosSQL)
+		print('--------------------------------')
+    
+		alunosMongo = []
+    
+		for aluno in alunosSQL:
+			print(f'Aluno: {aluno}')
+			alunosMongo.append({
+				"id": aluno[0],
+				"dept_name": aluno[1],
+				"name": aluno[2],
+				"tot_cred": aluno[3]
+			})
+    
+		""" teste = db.student.insert_many(alunosMongo)
+		print('\n----------Alunos Inseridos Mondo----------')
+		print(teste)
+		print('--------------------------------------------')
+    
+    
+    # Busca dados dos professores
+		professoresSQL = getDataSQLDB('select * from instructor')
+		print('\n----------Professores SQL----------')
+		print(professoresSQL)
+		print('-------------------------------------')
+    
+		professoresMongo = []
+    
+		for prof in professoresSQL:
+			print(f'Professor: {prof}')
+     
+			alunosID = [alunoID["_id"] for alunoID in alunosMongo if alunoID["dept_name"] == prof[1]]
+     
+			professoresMongo.append({
+				"id": prof[0],
+				"dept_name": prof[1],
+				"name": prof[2],
+				"salary": prof[3],
+    		"students": alunosID
+			})
+    
+		teste1 = db.student.insert_many(alunosMongo)
+		print('\n----------Professores Inseridos Mondo----------')
+		print(teste1)
+		print('-------------------------------------------------')
+    
+    # Busca no mongo - Resolver a questao
+		professores = db.instructor.find({})
+  
+		for prof in professores:
+			print(f'Prof: {prof}')
+			print(f'O professor {prof}, tem {len(prof["students"])} estudantes')
+		# 	print(f'Prof: {prof}')
+		# 	alunos = db.student.find({  }) """
+	except Exception as e:
+		print(f'Erro: {e}')
+
 # questao1()
 # questao2("BIO-101", "Summer")
-questao3("Intro. to Computer Science")
+# questao3("Intro. to Computer Science")
+questao10()

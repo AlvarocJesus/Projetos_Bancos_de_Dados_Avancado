@@ -162,7 +162,7 @@ pre_requisitos: {
 }
 ```
 
-## 10. Recuperar a quantidade de alunos orientados por cada professor
+## 10. Recuperar a quantidade de alunos orientados por cada professor - OK
 
 ```txt
 professores: {

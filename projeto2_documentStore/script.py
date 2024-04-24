@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateT
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
+from time import sleep
 
 username = 'alvimcoelhojesus'
 password = 'Wz5wyAvFghP6DCPs'
@@ -24,7 +25,7 @@ except Exception as e:
 def getDataSQLDB(query):
 	try:
 		# Cria uma conexão com o banco de dados
-		engine = create_engine('postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie', echo=True)
+		engine = create_engine('postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie', echo=False)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		
@@ -50,6 +51,8 @@ def deleteDataMongoDB(collection):
 # 1. Listar todos os cursos oferecidos por um determinado departamento
 def questao1():
 	try:
+		print("Questão 1")
+
 		# Deleta todos os cursos e departamentos do mongodb
 		deleteDataMongoDB('course')
 		deleteDataMongoDB('department')
@@ -98,6 +101,8 @@ def questao1():
 # 2. Recuperar todas as disciplinas de um curso específico em um determinado semestre
 def questao2(course, semester):
 	try:
+		print("\nQuestão 2")
+
 		deleteDataMongoDB('section')
 
 		section = getDataSQLDB('select * from section;')
@@ -123,7 +128,7 @@ def questao2(course, semester):
 				{ "semester": semester }
 			]
 		})
-		print(sectionsMongo)
+		
 		for section in sectionsMongo:
 			print(f'Course ID: {section["course_id"]}\tSection ID: {section["sec_id"]}\tSemester: {section["semester"]}\tYear: {section["year"]}\tBuilding: {section["building"]}\tRoom Number: {section["room_number"]}\tTime Slot ID: {section["time_slot_id"]}')
 	except Exception as e:
@@ -132,7 +137,7 @@ def questao2(course, semester):
 # 3. Encontrar todos os estudantes que estão matriculados em um curso específico
 def questao3(nomeCurso):
 	try:
-		print("Questão 3")
+		print("\nQuestão 3")
 		# deleta os alunos e cursos
 		deleteDataMongoDB('student')
 		deleteDataMongoDB('course')
@@ -171,9 +176,7 @@ def questao3(nomeCurso):
 		# busca no mongodb os cursos e alunos
 		cursosFinalMonngo = db.course.find({ "title": nomeCurso })
 		for cursoFinalMongo in cursosFinalMonngo:
-			# print(f'Curso que esta salvo no mongo: {cursoFinalMongo}')
 			for alunoID in cursoFinalMongo['students']:
-				# print(f'Aluno que esta matriculado no curso: {alunoID}')
 				alunos = db.student.find({ "_id": ObjectId(alunoID) })
 				for aluno in alunos:
 					print(f'No curso de {cursoFinalMongo["title"]} estao matriculados os alunos {aluno["name"]}')
@@ -183,67 +186,49 @@ def questao3(nomeCurso):
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10():
 	try:
+		print("\nQuestão 10")
 		# remove os dados de alunos e professores do mongoDB
 		deleteDataMongoDB('student')
 		deleteDataMongoDB('instructor')
     
     # busca os dados de alunos no SQL
 		alunosSQL = getDataSQLDB('select * from student;')
-		print('\n----------Alunos SQL----------')
-		print(alunosSQL)
-		print('--------------------------------')
     
 		alunosMongo = []
     
 		for aluno in alunosSQL:
-			print(f'Aluno: {aluno}')
 			alunosMongo.append({
 				"id": aluno[0],
-				"dept_name": aluno[1],
-				"name": aluno[2],
+				"name": aluno[1],
+				"dept_name": aluno[2],
 				"tot_cred": aluno[3]
 			})
     
-		""" teste = db.student.insert_many(alunosMongo)
-		print('\n----------Alunos Inseridos Mondo----------')
-		print(teste)
-		print('--------------------------------------------')
+		db.student.insert_many(alunosMongo)
     
-    
-    # Busca dados dos professores
+		# Busca dados dos professores
 		professoresSQL = getDataSQLDB('select * from instructor')
-		print('\n----------Professores SQL----------')
-		print(professoresSQL)
-		print('-------------------------------------')
     
 		professoresMongo = []
     
 		for prof in professoresSQL:
-			print(f'Professor: {prof}')
-     
-			alunosID = [alunoID["_id"] for alunoID in alunosMongo if alunoID["dept_name"] == prof[1]]
+			alunosID = [alunoID["_id"] for alunoID in alunosMongo if alunoID["dept_name"] == prof[2]]
      
 			professoresMongo.append({
 				"id": prof[0],
-				"dept_name": prof[1],
-				"name": prof[2],
+				"name": prof[1],
+				"dept_name": prof[2],
 				"salary": prof[3],
     		"students": alunosID
 			})
+		
+		db.instructor.insert_many(professoresMongo)
     
-		teste1 = db.student.insert_many(alunosMongo)
-		print('\n----------Professores Inseridos Mondo----------')
-		print(teste1)
-		print('-------------------------------------------------')
-    
-    # Busca no mongo - Resolver a questao
+		# Busca no mongo - Resolver a questao
 		professores = db.instructor.find({})
   
 		for prof in professores:
-			print(f'Prof: {prof}')
-			print(f'O professor {prof}, tem {len(prof["students"])} estudantes')
-		# 	print(f'Prof: {prof}')
-		# 	alunos = db.student.find({  }) """
+			print(f'O professor {prof["name"]} do departamento de {prof["dept_name"]}, tem {len(prof["students"])} estudantes')
 	except Exception as e:
 		print(f'Erro: {e}')
 

@@ -1,14 +1,13 @@
-# pip --version
-# python -m pip install --upgrade pip
-# pip install astrapy
 from astrapy import DataAPIClient
+from configparser import ConfigParser
 
-astraToken = 'AstraCS:qpZoBwBqvCQnRmmEjepXexYq:36634fa9375d6c56bd8ccecc333f090f2af51ebb9635161eba0df732966a7b27'
+config = ConfigParser().read('../config.ini')
+# print(config.get("ASTRADB","astraURL"))
 
 # Initialize the client
-client = DataAPIClient(f"{astraToken}")
+client = DataAPIClient(config["ASTRADB"]["astraToken"])
 db = client.get_database_by_api_endpoint(
-  "https://249f483f-685e-4b8a-8436-ae34dd6f7103-us-east-2.apps.astra.datastax.com"
+  config["ASTRADB"]["astraURL"],
 )
 
 print(f"Connected to Astra DB: {db.list_collection_names()}")

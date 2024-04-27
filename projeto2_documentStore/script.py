@@ -4,14 +4,12 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateT
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
-from time import sleep
+from configparser import ConfigParser
 
-username = 'alvimcoelhojesus'
-password = 'Wz5wyAvFghP6DCPs'
-uri = f"mongodb+srv://{username}:{password}@projeto2documentstore.bv2jjzy.mongodb.net/?retryWrites=true&w=majority&appName=Projeto2DocumentStore"
+config = ConfigParser().read('../config.ini')
 
 # Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+client = MongoClient(config["MONGODB"]["uri"], server_api=ServerApi('1'))
 db = client.projeto2
 
 # Send a ping to confirm a successful connection
@@ -25,7 +23,7 @@ except Exception as e:
 def getDataSQLDB(query):
 	try:
 		# Cria uma conexão com o banco de dados
-		engine = create_engine('postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie', echo=False)
+		engine = create_engine(config['POSTGRES']['urlDB'], echo=False)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		

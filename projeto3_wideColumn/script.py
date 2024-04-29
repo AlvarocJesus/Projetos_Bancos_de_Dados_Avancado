@@ -2,21 +2,6 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from configparser import ConfigParser
 from time import sleep
-
-config = ConfigParser().read('../config.ini')
-# print(config.get("ASTRADB","astraURL"))
-
-""" Teste 1
-from astrapy import DataAPIClient
-# Initialize the client
-client = DataAPIClient('AstraCS:ndBfjDoOdoTuCUTQdTppRzbZ:5620e5c809dd904b5bfadc498e4afd6ecd3cc417eaa64f1d8eddbe6032bf52e6')
-db = client.get_database_by_api_endpoint(
-  'https://249f483f-685e-4b8a-8436-ae34dd6f7103-us-east-2.apps.astra.datastax.com'
-)
-
-print(f"Connected to Astra DB: {db.list_collection_names()}") """
-
-# Teste 2
 import os
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider

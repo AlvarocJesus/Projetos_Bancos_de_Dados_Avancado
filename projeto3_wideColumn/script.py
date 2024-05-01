@@ -1,32 +1,20 @@
+import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from configparser import ConfigParser
-from time import sleep
-
-config = ConfigParser().read('../config.ini')
-# print(config.get("ASTRADB","astraURL"))
-
-""" Teste 1
-from astrapy import DataAPIClient
-# Initialize the client
-client = DataAPIClient('AstraCS:ndBfjDoOdoTuCUTQdTppRzbZ:5620e5c809dd904b5bfadc498e4afd6ecd3cc417eaa64f1d8eddbe6032bf52e6')
-db = client.get_database_by_api_endpoint(
-  'https://249f483f-685e-4b8a-8436-ae34dd6f7103-us-east-2.apps.astra.datastax.com'
-)
-
-print(f"Connected to Astra DB: {db.list_collection_names()}") """
-
-# Teste 2
-import os
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
+from configparser import ConfigParser
+from time import sleep
+from dotenv import load_dotenv
+
+load_dotenv()
 
 session = Cluster(
     cloud={
-			"secure_connect_bundle": SECURECONNECTBUNDLEPATH,
+			"secure_connect_bundle": os.getenv('SECURECONNECTBUNDLEPATH'),
 			'connect_timeout': 30
 		},
-    auth_provider=PlainTextAuthProvider("token", astraToken),
+    auth_provider=PlainTextAuthProvider("token", os.getenv('astraToken')),
 ).connect()
 
 print(f'Session: {session}')
@@ -49,7 +37,7 @@ CREATE TABLE default_keyspace.course_department (
 def getDataSQLDB(query):
 	try:
 		# Cria uma conexão com o banco de dados
-		engine = create_engine('postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie', echo=True)
+		engine = create_engine(os.getenv('POSTGRESURLDB'), echo=True)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		
@@ -104,4 +92,17 @@ def questao1():
   except Exception as e:
     print(f"Deu errado {e}")
 
+# 2. Recuperar todas as disciplinas de um curso específico em um determinado semestre
+def questao2():
+	try:
+		print('Questao 2')
+		
+    # Deleta os dados da tabela
+		deleteDataCassandraDB('course_department')
+	except Exception as e:
+		print(f"Deu errado {e}")
+
 questao1()
+questao2()
+# questao3()
+# questao10()

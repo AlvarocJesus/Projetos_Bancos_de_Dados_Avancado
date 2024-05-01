@@ -1,15 +1,15 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, insert, select, text
-from sqlalchemy.orm import relationship, sessionmaker, declarative_base
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Float
+import os
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
-from configparser import ConfigParser
+from dotenv import load_dotenv
 
-config = ConfigParser().read('../config.ini')
+load_dotenv()
 
 # Create a new client and connect to the server
-client = MongoClient(config["MONGODB"]["uri"], server_api=ServerApi('1'))
+client = MongoClient(os.getenv('MONGODBURI'), server_api=ServerApi('1'))
 db = client.projeto2
 
 # Send a ping to confirm a successful connection
@@ -23,7 +23,7 @@ except Exception as e:
 def getDataSQLDB(query):
 	try:
 		# Cria uma conexão com o banco de dados
-		engine = create_engine(config['POSTGRES']['urlDB'], echo=False)
+		engine = create_engine(os.getenv('POSTGRESURLDB'), echo=False)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		

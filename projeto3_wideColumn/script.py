@@ -1,12 +1,9 @@
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from configparser import ConfigParser
 from time import sleep
-import os
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
-from configparser import ConfigParser
 from time import sleep
 from dotenv import load_dotenv
 
@@ -35,6 +32,7 @@ CREATE TABLE default_keyspace.course_department (
     PRIMARY KEY (dept_name, course_id, title)
 );
 
+- Questao 2
 CREATE TABLE default_keyspace.section (
 		course_id text,
 		sec_id text,
@@ -46,6 +44,33 @@ CREATE TABLE default_keyspace.section (
 		PRIMARY KEY ((couse_id), sec_id, semester, year)
 );
 create index on default_keyspace.section(semester);
+
+- Questao 3
+CREATE TABLE default_keyspace.students_course (
+		dept_name text,
+		building text,
+		budget text,
+		course_id text,
+		title text,
+		credits text,
+		id text,
+		name text,
+		tot_cred  text,
+		PRIMARY KEY ((name), title, dept_name)
+);
+create index on default_keyspace.students_course(title);
+
+- Questao 10
+CREATE TABLE default_keyspace.students_teaches (
+		id_instructor text,
+		name text,
+		salary text,
+		id_student text,
+		name_student text,
+		dept_name text,
+		tot_cred text,
+		PRIMARY KEY ((name), name_student, dept_name)
+);
 """
 
 # Realiza o select no banco de dados SQL
@@ -132,7 +157,76 @@ def questao2(course, semester):
 	except Exception as e:
 		print(f"Deu errado {e}")
 
+# 3. Encontrar todos os estudantes que estão matriculados em um curso específico
+def questao3(titleCourse):
+	try:
+		print('Questao 3')
+
+		# Deleta os dados da tabela
+		deleteDataCassandraDB('students_course')
+
+		studentsCourse = getDataSQLDB("""
+			select
+				d.dept_name,
+				d.building,
+				d.budget,
+				c.course_id,
+				c.title,
+				c.credits,
+				s.id,
+				s."name",
+				s.tot_cred 
+			from department d  
+			inner join course c on d.dept_name = c.dept_name 
+			inner join student s on c.dept_name = s.dept_name;""")
+
+		studentsCourseCassandra = []
+		for student in studentsCourse:
+			query = f"insert into default_keyspace.students_course(dept_name, building, budget, course_id, title, credits, id, name, tot_cred) values ('{student[0]}', '{student[1]}', '{student[2]}', '{student[3]}', '{student[4]}', '{student[5]}', '{student[6]}', '{student[7]}', '{student[8]}');"
+			studentsCourseCassandra.append(session.execute(query))
+			sleep(1)
+		print('Adicionou os dados no Cassandra')
+
+		studentsCoursesCassandra = session.execute(f"select * from default_keyspace.students_course where title = '{titleCourse}'")
+		for student in studentsCoursesCassandra:
+			print(f'Curso: {student[1]}, tem o estudante {student[0]} matriculado')
+	except Exception as e:
+		print(f"Deu errado {e}")
+
+# 10. Recuperar a quantidade de alunos orientados por cada professor
+def questao10():
+	try:
+		print('Questao 10')
+
+		# Deleta os dados da tabela
+		deleteDataCassandraDB('students_teaches')
+
+		studentsTeaches = getDataSQLDB("""
+			select 
+				i.id as id_instructor
+				, i."name"
+				, i.salary 
+				, s.id as id_student
+				, s."name"
+				, s.dept_name
+				, s.tot_cred
+			from instructor i
+			inner join student s on i.dept_name = s.dept_name;""")
+
+		for student in studentsTeaches:
+			query = f"insert into default_keyspace.students_teaches(id_instructor, name, salary, id_student, name_student, dept_name, tot_cred) values ('{student[0]}', '{student[1]}', '{student[2]}', '{student[3]}', '{student[4]}', '{student[5]}', '{student[6]}');"
+			session.execute(query)
+			sleep(1)
+		print('Adicionou os dados no Cassandra')
+
+		studentsTeachesCassandra = session.execute('select * from default_keyspace.students_teaches;')
+		
+		for students in studentsTeachesCassandra:
+			print(f'Professor {students[0]} orienta o aluno {students[1]}')
+	except Exception as e:
+		print(f"Deu errado {e}")
+
 # questao1()
-questao2("BIO-101", "Summer")
-# questao3()
-# questao10()
+# questao2("BIO-101", "Summer")
+# questao3("Intro. to Computer Science")
+questao10()

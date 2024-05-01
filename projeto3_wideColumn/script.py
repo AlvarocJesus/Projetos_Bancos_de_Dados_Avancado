@@ -1,6 +1,9 @@
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+from configparser import ConfigParser
+from time import sleep
+import os
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from configparser import ConfigParser
@@ -98,7 +101,7 @@ def questao2():
 		print('Questao 2')
 		
     # Deleta os dados da tabela
-		deleteDataCassandraDB('course_department')
+		# deleteDataCassandraDB('section')
 	except Exception as e:
 		print(f"Deu errado {e}")
 

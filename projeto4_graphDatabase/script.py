@@ -13,9 +13,5 @@ connection = driver.verify_connectivity()
 print(f'Conectado ao Neo4j: {connection}')
 
 session = driver.session()
-
-def create_person(tx, name):
-  tx.run("CREATE (a:Person {name: $name})", name=name)
-
-create_person(session, "Alice")
+print(f'Sessão criada: {session}')
 

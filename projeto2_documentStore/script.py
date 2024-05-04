@@ -181,6 +181,153 @@ def questao3(nomeCurso):
 	except Exception as e:
 		print(f'Deu ruim: {e}')
 
+# 4. Listar a média de salários de todos os professores em um determinado departamento  
+def questao4(dept_name):
+    try:
+        print("Questão 4: Listar a média de salários de todos os professores em um determinado departamento\n")
+
+        # remove os dados de alunos e professores do mongoDB
+        deleteDataMongoDB('student')
+        deleteDataMongoDB('instructor')
+    
+    # busca os dados de alunos no SQ
+        instructorSQL = getDataSQLDB('select * from instructor;')
+    
+        instructorMongo = []
+        for professor in instructorSQL:
+            
+            instructorMongo.append({
+                "id": professor[0],
+                "name": professor[1],
+                "dept_name": professor[2],
+                "salary": professor[3]
+            })
+
+        db.instructor.insert_many(instructorMongo)
+    
+        # Busca dados dos professores
+        departmentSQL = getDataSQLDB('select * from department')
+    
+        departmentMongo = []
+
+        for dept in departmentSQL:
+            
+            professoresID = [professoresID["_id"] for professoresID in instructorMongo if professoresID["dept_name"] == dept[0]]
+            
+            departmentMongo.append({
+                "name": dept[0],
+                "building": dept[1],
+                "budget": dept[2],
+            "professores": professoresID
+            })
+        db.department.insert_many(departmentMongo)
+    
+        # Busca no mongo - Resolver a questao
+        department = db.department.find({ "name": dept_name })
+	
+        salarios = []
+        for dept in department:
+            salarios = [prof["salary"] for prof in instructorMongo if prof["dept_name"] == dept["name"]]
+            
+        media = sum(salarios) / len(salarios)
+        print(f'Media: {media}')
+
+    except Exception as e:
+        print(f'Erro: {e}')
+
+# 5. Recuperar o número total de créditos obtidos por um estudante específico 
+def questao5(name):
+    try:
+        print("Questão 5: Recuperar o número total de créditos obtidos por um estudante específico\n")
+
+        # remove os dados de alunos e professores do mongoDB
+        deleteDataMongoDB('student')
+    
+        # busca os dados de alunos e professores no SQL
+        alunosSQL = getDataSQLDB('select * from student;')
+    
+        alunorMongo = []
+        for Aluno in alunosSQL:
+            alunorMongo.append({
+                "id": Aluno[0],
+                "name": Aluno[1],
+                "dept_name": Aluno[2],
+                "tot_cred": Aluno[3]
+            })
+            
+        db.student.insert_many(alunorMongo)    
+        
+        # Busca no mongo - Resolver a questao
+        student = db.student.find({ "name": name })
+
+        
+        for aluno in student:
+            if aluno["name"] == name:
+                print(f'O aluno {aluno["name"]} tem {aluno["tot_cred"]} créditos')
+
+    except Exception as e:
+        print(f'Erro: {e}')
+        
+#6. Encontrar todas as disciplinas ministradas por um professor em um semestre específico
+def questao6(professor_name, semester):
+    try:
+        print("Questão 6: Encontrar todas as disciplinas ministradas por um professor em um semestre específico\n")
+
+        # remove os dados de professores e disciplinas do mongoDB
+        deleteDataMongoDB('instructor')
+        deleteDataMongoDB('teaches')
+
+		# Busca dados das disciplinas ministradas
+        teachesSQL = getDataSQLDB('select * from teaches')
+
+        teachesMongo = []
+        for teach in teachesSQL:
+            teachesMongo.append({
+                "course_id": teach[1],
+                "id": teach[0],
+                "sec_id": teach[2],
+                "semester": teach[3],
+                "year": teach[4]
+            })
+        
+        db.teaches.insert_many(teachesMongo)
+
+
+        # busca os dados de professores no SQL
+        instructorSQL = getDataSQLDB('select * from instructor;')
+
+
+
+        instructorMongo = []
+        for professor in instructorSQL:
+        
+            professoresID = [professoresID["_id"] for professoresID in teachesMongo if professoresID["id"] == professor[0]]
+            
+            instructorMongo.append({
+                "id": professor[0],
+                "name": professor[1],
+                "dept_name": professor[2],
+                "salary": professor[3],
+            "professores": professoresID
+            })
+        db.instructor.insert_many(instructorMongo)
+
+        
+
+        # Busca no mongo - Resolver a questao
+        instructor = db.instructor.find({ "name": professor_name})
+        for teach in instructor:
+    
+            for semestre in teach["professores"]:
+                
+                courses = db.teaches.find({"_id": semestre ,"semester": semester })
+                for course in courses:
+                    print(course)
+                    print(f'O professor {teach["name"]} ministrou a disciplina {course["course_id"]} no semestre {course["semester"]}')
+
+    except Exception as e:
+        print(f'Erro: {e}')
+
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10():
 	try:

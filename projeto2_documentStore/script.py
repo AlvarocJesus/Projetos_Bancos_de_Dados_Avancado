@@ -328,6 +328,169 @@ def questao6(professor_name, semester):
     except Exception as e:
         print(f'Erro: {e}')
 
+# 7. Listar todos os estudantes que têm um determinado professor como orientador
+def questao7():
+	try:
+		print("Questão 7")
+		# remove os dados de alunos e professores do mongoDB
+		deleteDataMongoDB('student')
+		deleteDataMongoDB('instructor')
+
+		# busca os dados de alunos no SQL
+		alunosSQL = getDataSQLDB('select * from student;')
+    
+		alunosMongo = []
+    
+		for aluno in alunosSQL:
+			alunosMongo.append({
+				"id": aluno[0],
+				"name": aluno[1],
+				"dept_name": aluno[2],
+				"tot_cred": aluno[3]
+			})
+    
+		db.student.insert_many(alunosMongo)
+    
+		# Busca dados dos professores
+		professoresSQL = getDataSQLDB('select * from instructor')
+    
+		professoresMongo = []
+    
+		for prof in professoresSQL:
+			alunosID = [alunoID["_id"] for alunoID in alunosMongo if alunoID["dept_name"] == prof[2]]
+     
+			professoresMongo.append({
+				"id": prof[0],
+				"name": prof[1],
+				"dept_name": prof[2],
+				"salary": prof[3],
+    		"students": alunosID
+			})
+		
+		db.instructor.insert_many(professoresMongo)
+
+		# Faz a macumba  - Resolver a questao
+		professores = db.instructor.find({"name": "Srinivasan"})
+  
+		for prof in professores:
+			for aluno in prof["students"]:
+				alunos = db.student.find({"_id": aluno})
+				for alu in alunos:
+					print(f'O professor {prof["name"]} dá aula para {alu["name"]}')
+		
+
+	except Exception as e:
+		print(f'Erro: {e}')
+
+# 8. Recuperar todas as salas de aula sem um curso associado
+def questao8():
+	try:
+		print("\nQuestão 8")
+		# deleta os depts, salas e cursos
+		deleteDataMongoDB('classroom')
+		deleteDataMongoDB('course')
+		deleteDataMongoDB('department')
+		
+		# busca no sql e insere no mongodb os cursos
+		cursos = getDataSQLDB('select * from course;')
+		cursoMongol = []
+		for curso in cursos:
+			cursoMongol.append({
+				'course_id': curso[0],
+				'tittle': curso[1],
+				'dept_name': curso[2],
+				'credits': curso[3]
+			})
+		
+		db.couse.insert_many(cursoMongol)
+
+		# busca no sql e insere no mongodb os cursos
+		section = getDataSQLDB('select * from section;')
+
+		secMongol = []
+		for sec in section:
+			sec_ID = [sec_ID["_id"] for sec_ID in cursoMongol if sec_ID["dept_name"] == curso[2]]
+
+			secMongol.append({
+				'course_id': sec[0],
+				'sec_id': sec[1],
+				'semester': sec[2],
+				'year': sec[3],
+				'building': sec[4],
+				'room_number': sec[5],
+				'time_slot_id': sec[6],
+				'deptID': sec_ID
+			})
+		db.section.insert_many(secMongol)
+
+		clsr = getDataSQLDB('select * from classroom')
+
+		clrsMongol = []
+		for cls in clsr:
+			clsr_ID = [clsr_ID["_id"] for clsr_ID in secMongol if clsr_ID["deptID"] == sec_ID]
+			
+
+			clrsMongol.append({
+				'building': cls[0],
+				'room_number': cls[1],
+				'capacity': cls[2],
+				'sectionIds': clsr_ID
+			})
+		db.course.insert_many(clrsMongol)
+		# Busca as salas sem cursos
+		sectionEnd = db.section.find({"course_id": ""})
+		for cl in sectionEnd:
+				print(f'As salas sem cursos associados são: {cl["building"]}')
+			
+	except Exception as e:
+		print(f'Erro: {e}')
+
+#9. Encontrar todos os pré-requisitos de um curso específico
+def questao9(cursoEspecifico):
+	try:
+		print("\nQuestão 9")
+		# deleta os prereq e cursos
+		deleteDataMongoDB('prereq')
+		deleteDataMongoDB('course')
+
+		# busca no sql e insere no mongodb os prereq
+		prerequisitos = getDataSQLDB('select * from prereq;')
+		preqMongo = []
+		for preq in prerequisitos:
+			preqMongo.append({
+				'course_id': preq[0],
+				'prereq_id': preq[1],
+				})
+		db.prereq.insert_many(preqMongo)
+
+		# busca no sql e insere no mongodb os cursos
+		cursos = getDataSQLDB('select * from course;')
+
+		cursosMongo = []
+		for curso in cursos:
+			preqID = [preqID["_id"] for preqID in preqMongo if preqID["course_id"] == curso[0]]
+
+			cursosMongo.append({
+				'course_id': curso[0],
+				'title': curso[1],
+				'dept_name': curso[2],
+				'credits': curso[3],
+				'prerequisitos': preqID
+			})
+		
+		db.course.insert_many(cursosMongo)
+
+		# busca no mongodb os cursos e prereq
+		cursosFinalMonngo = db.course.find({ "title": cursoEspecifico })
+		for cursoFinalMongo in cursosFinalMonngo:
+			for preqID in cursoFinalMongo['prerequisitos']:
+				prerequisitos = db.prereq.find({ "_id": ObjectId(preqID) })
+				for preq in prerequisitos:
+					print(f'Para cursar {cursoFinalMongo["title"]} é necessário ter {preq["prereq_id"]}')
+
+	except Exception as e:
+		print(f'Erro: {e}')
+
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10():
 	try:
@@ -377,7 +540,13 @@ def questao10():
 	except Exception as e:
 		print(f'Erro: {e}')
 
-# questao1()
+questao1()
 # questao2("BIO-101", "Summer")
 # questao3("Intro. to Computer Science")
-questao10()
+# questao4("Biology")
+# questao5("Smith")
+# questao6("Srinivasan", "Fall")
+# questao7()
+# questao8()
+# questao9("Data Structures")
+# questao10()

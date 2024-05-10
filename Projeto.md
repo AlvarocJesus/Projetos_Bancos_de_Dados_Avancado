@@ -20,10 +20,13 @@ A partir das 10 queries a seguir, estruture o modelo de dados para ser armazenan
 
 ## MongoDB
 
-### Atlas
+## Cassandra
 
-#### Conexao
+## Neo4J
 
-##### Driver
-
-![Conexao Driver]('./projeto2_documentStore/conexao_driver.png')
+# Integrantes
+| Nome | RA |
+| ---- | ---- |
+|Álvaro Coelho Jesus  |22221002-3|
+|Nicolas Moraes  |22122099-9|
+|Renan Guastella Piva|2222xxxx-x|

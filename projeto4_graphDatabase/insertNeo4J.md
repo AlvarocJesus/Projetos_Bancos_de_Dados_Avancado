@@ -1,3 +1,4 @@
+```
 delete from prereq;
 delete from time_slot;
 delete from advisor;
@@ -9,15 +10,19 @@ delete from instructor;
 delete from course;
 delete from department;
 delete from classroom;
+```
 
+```cypher
 create
 
+// Tabela CLASSROOM
 (Packard:classroom { building: 'Packard', room_number: '101', capacity: '500'});
 (Painter:classroom { building: 'Painter', room_number: '514', capacity: '10'});
 (Taylor:classroom { building: 'Taylor', room_number: '3128', capacity: '70'});
 (Watson:classroom { building: 'Watson', room_number: '100', capacity: '30'});
 (Watson:classroom { building: 'Watson', room_number: '120', capacity: '50'});
 
+// Tabela DEPARTMENT
 ('Biology':department { dept_name: 'Biology', building: 'Watson', budget: '90000'});
 ('Comp. Sci.':department { dept_name: 'Comp. Sci.', building: 'Taylor', budget: '100000'});
 ('Elec. Eng.':department { dept_name: 'Elec. Eng.', building: 'Taylor', budget: '85000'});
@@ -26,6 +31,8 @@ create
 ('Music':department { dept_name: 'Music', building: 'Packard', budget: '80000'});
 ('Physics':department { dept_name: 'Physics', building: 'Watson', budget: '70000'});
 
+
+// Tabela COURSE
 ('BIO-101':course { course_id: 'BIO-101', title: 'Intro. to Biology', dept_name: 'Biology', credits: '4'});
 ('BIO-301':course { course_id: 'BIO-301', title: 'Genetics', dept_name: 'Biology', credits: '4'});
 ('BIO-399':course { course_id: 'BIO-399', title: 'Computational Biology', dept_name: 'Biology', credits: '3'});
@@ -40,6 +47,7 @@ create
 ('MU-199':course { course_id: 'MU-199', title: 'Music Video Production', dept_name: 'Music', credits: '3'});
 ('PHY-101':course { course_id: 'PHY-101', title: 'Physical Principles', dept_name: 'Physics', credits: '4'});
 
+// Tabela INSTRUCTOR
 ('Srinivasan':instructor { id: '10101', name: 'Srinivasan', dept_name: 'Comp. Sci.', salary: '65000'});
 ('Wu':instructor { id: '12121', name: 'Wu', dept_name: 'Finance', salary: '90000'});
 ('Mozart':instructor { id: '15151', name: 'Mozart', dept_name: 'Music', salary: '40000'});
@@ -53,6 +61,7 @@ create
 ('Brandt':instructor { id: '83821', name: 'Brandt', dept_name: 'Comp. Sci.', salary: '92000'});
 ('Kim':instructor { id: '98345', name: 'Kim', dept_name: 'Elec. Eng.', salary: '80000'});
 
+// Tabela SECTION
 ('BIO-101':section { course_id: 'BIO-101', sec_id: '1', semester: 'Summer', year: '2017', building: 'Painter', room_number: '514', time_slot_id: 'B' });
 ('BIO-301':section { course_id: 'BIO-301', sec_id: '1', semester: 'Summer', year: '2018', building: 'Painter', room_number: '514', time_slot_id: 'A' });
 ('CS-101':section { course_id: 'CS-101', sec_id: '1', semester: 'Fall', year: '2017', building: 'Packard', room_number: '101', time_slot_id: 'H' });
@@ -69,6 +78,7 @@ create
 ('MU-199':section { course_id: 'MU-199', sec_id: '1', semester: 'Spring', year: '2018', building: 'Packard', room_number: '101', time_slot_id: 'D' });
 ('PHY-101':section { course_id: 'PHY-101', sec_id: '1', semester: 'Fall', year: '2017', building: 'Watson', room_number: '100', time_slot_id: 'A' });
 
+// Tabela STUDENT
 ('Zhang':student { id: '00128', name: 'Zhang', dept_name: 'Comp. Sci.', tot_cred: '102'});
 ('Shankar':student { id: '12345', name: 'Shankar', dept_name: 'Comp. Sci.', tot_cred: '32'});
 ('Brandt':student { id: '19991', name: 'Brandt', dept_name: 'History', tot_cred: '80'});
@@ -83,6 +93,7 @@ create
 ('Bourikas':student { id: '98765', name: 'Bourikas', dept_name: 'Elec. Eng.', tot_cred: '98'});
 ('Tanaka':student { id: '98988', name: 'Tanaka', dept_name: 'Biology', tot_cred: '120'});
 
+// Tabela TAKES
 ('CS-101':takes { id: '00128', course_id: 'CS-101', sec_id: '1', semester: 'Fall', year: '2017', grade: 'A'});
 ('CS-347':takes { id: '00128', course_id: 'CS-347', sec_id: '1', semester: 'Fall', year: '2017', grade:'A-'});
 ('CS-101':takes { id: '12345', course_id: 'CS-101', sec_id: '1', semester: 'Fall', year: '2017', grade: 'C'});
@@ -106,16 +117,18 @@ create
 ('BIO-101':takes { id: '98988', course_id: 'BIO-101', sec_id: '1', semester: 'Summer', year: '2017', grade: 'A'});
 ('BIO-301':takes { id: '98988', course_id: 'BIO-301', sec_id: '1', semester: 'Summer', year: '2018', grade: null});
 
-('00128':advisor { s_id: '00128', i_id: '45565'});  
-('12345':advisor { s_id: '12345', i_id: '10101'});  
-('23121':advisor { s_id: '23121', i_id: '76543'});  
-('44553':advisor { s_id: '44553', i_id: '22222'});  
-('45678':advisor { s_id: '45678', i_id: '22222'});  
-('76543':advisor { s_id: '76543', i_id: '45565'});  
-('76653':advisor { s_id: '76653', i_id: '98345'});  
-('98765':advisor { s_id: '98765', i_id: '98345'});  
-('98988':advisor { s_id: '98988', i_id: '76766'});
+// Tabela ADVISOR
+(Zhang)-[:ADVISOR]->(Katz),
+(Shankar)-[:ADVISOR]->(Srinivasan),
+(Chavez)-[:ADVISOR]->(Singh),
+(Peltier)-[:ADVISOR]->(Einstein),
+(Levy)-[:ADVISOR]->(Einstein),
+(Brown)-[:ADVISOR]->(Katz),
+(Aoi)-[:ADVISOR]->(Kim),
+(Bourikas)-[:ADVISOR]->(Kim),
+(Tanaka)-[:ADVISOR]->(Crick),
 
+// Tabela TIME_SLOT
 ('A':time_slot { time_slot_id: 'A', day: 'M', start_hr: '8', start_min: '0', end_hr: '8', end_min: '50'});
 ('A':time_slot { time_slot_id: 'A', day: 'W', start_hr: '8', start_min: '0', end_hr: '8', end_min: '50'});
 ('A':time_slot { time_slot_id: 'A', day: 'F', start_hr: '8', start_min: '0', end_hr: '8', end_min: '50'});
@@ -137,10 +150,12 @@ create
 ('G':time_slot { time_slot_id: 'G', day: 'F', start_hr: '16', start_min: '0', end_hr: '16', end_min: '50'});
 ('H':time_slot { time_slot_id: 'H', day: 'W', start_hr: '10', start_min: '0', end_hr: '12', end_min: '30'});
 
-('BIO-301':prereq { course_id: 'BIO-301', prereq_id: 'BIO-101'});  
-('BIO-399':prereq { course_id: 'BIO-399', prereq_id: 'BIO-101'});  
-('CS-190':prereq { course_id: 'CS-190', prereq_id: 'CS-101'});  
-('CS-315':prereq { course_id: 'CS-315', prereq_id: 'CS-101'});  
-('CS-319':prereq { course_id: 'CS-319', prereq_id: 'CS-101'});  
-('CS-347':prereq { course_id: 'CS-347', prereq_id: 'CS-101'});  
-('EE-181':prereq { course_id: 'EE-181', prereq_id: 'PHY-101'});
+// Tabela PREREQ
+('BIO-101')-[:PREREQ]->('BIO-101'),
+('BIO-101')-[:PREREQ]->('BIO-101'),
+('CS-101')-[:PREREQ]->('CS-101'),
+('CS-101')-[:PREREQ]->('CS-101'),
+('CS-101')-[:PREREQ]->('CS-101'),
+('CS-101')-[:PREREQ]->('CS-101'),
+('PHY-101')-[:PREREQ]->('PHY-101'),
+```

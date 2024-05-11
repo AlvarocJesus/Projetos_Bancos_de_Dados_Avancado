@@ -9,6 +9,7 @@ delete from instructor;
 delete from course;
 delete from department;
 delete from classroom;
+-- ----------Classroom----------
 insert into classroom
 values ('Packard', '101', '500');
 insert into classroom
@@ -19,6 +20,8 @@ insert into classroom
 values ('Watson', '100', '30');
 insert into classroom
 values ('Watson', '120', '50');
+-- ------------------------------
+-- ----------Department----------
 insert into department
 values ('Biology', 'Watson', '90000');
 insert into department
@@ -33,6 +36,8 @@ insert into department
 values ('Music', 'Packard', '80000');
 insert into department
 values ('Physics', 'Watson', '70000');
+-- ------------------------------
+-- ----------Course----------
 insert into course
 values ('BIO-101', 'Intro. to Biology', 'Biology', '4');
 insert into course
@@ -79,6 +84,8 @@ insert into course
 values ('MU-199', 'Music Video Production', 'Music', '3');
 insert into course
 values ('PHY-101', 'Physical Principles', 'Physics', '4');
+-- ------------------------------
+-- ----------Instructor----------
 insert into instructor
 values ('10101', 'Srinivasan', 'Comp. Sci.', '65000');
 insert into instructor
@@ -103,6 +110,7 @@ insert into instructor
 values ('83821', 'Brandt', 'Comp. Sci.', '92000');
 insert into instructor
 values ('98345', 'Kim', 'Elec. Eng.', '80000');
+-- ------------------------------
 insert into section
 values (
     'BIO-101',
@@ -283,6 +291,7 @@ insert into teaches
 values ('83821', 'CS-319', '2', 'Spring', '2018');
 insert into teaches
 values ('98345', 'EE-181', '1', 'Spring', '2017');
+-- ----------Student----------
 insert into student
 values ('00128', 'Zhang', 'Comp. Sci.', '102');
 insert into student
@@ -309,6 +318,7 @@ insert into student
 values ('98765', 'Bourikas', 'Elec. Eng.', '98');
 insert into student
 values ('98988', 'Tanaka', 'Biology', '120');
+-- ------------------------------
 insert into takes
 values ('00128', 'CS-101', '1', 'Fall', '2017', 'A');
 insert into takes
@@ -371,6 +381,7 @@ insert into advisor
 values ('98765', '98345');
 insert into advisor
 values ('98988', '76766');
+-- ----------Time Slot----------
 insert into time_slot
 values ('A', 'M', '8', '0', '8', '50');
 insert into time_slot
@@ -411,6 +422,7 @@ insert into time_slot
 values ('G', 'F', '16', '0', '16', '50');
 insert into time_slot
 values ('H', 'W', '10', '0', '12', '30');
+-- ------------------------------
 insert into prereq
 values ('BIO-301', 'BIO-101');
 insert into prereq

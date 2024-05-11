@@ -25,8 +25,9 @@ A partir das 10 queries a seguir, estruture o modelo de dados para ser armazenan
 ## Neo4J
 
 # Integrantes
-| Nome | RA |
-| ---- | ---- |
-|Álvaro Coelho Jesus  |22221002-3|
-|Nicolas Moraes  |22122099-9|
-|Renan Guastella Piva|2222xxxx-x|
+
+| Nome                 | RA         |
+| -------------------- | ---------- |
+| Álvaro Coelho Jesus  | 22221002-3 |
+| Nicolas Moraes       | 22122099-9 |
+| Renan Guastella Piva | 22221029-6 |

@@ -136,14 +136,28 @@ create
 (:time_slot { time_slot_id: 'H', day: 'W', start_ht: '10', start_min: '0', end_hr: '12', end_min: '30' }),
 ```
 
+### Section
+
+```cypher
+create
+()-[:SECTION { sec_id:  }]->()
+```
+
 ## Create Relações
 
-### Advisor
+### Exemplo
 
 ```cypher
 match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
 create
 (i)-[:ADVISOR]->(s)
+```
+
+### Advisor
+
+```cypher
+create
+()-[:ADVISOR]->()
 ```
 
 ### Prereq
@@ -160,12 +174,7 @@ create
 ()-[:TEACHES]->()
 ```
 
-### Section
 
-```cypher
-create
-()-[:SECTION { building: , room_number: , time_slot_id: }]->()
-```
 
 ### Takes ->acho q vai virar uma tabela
 

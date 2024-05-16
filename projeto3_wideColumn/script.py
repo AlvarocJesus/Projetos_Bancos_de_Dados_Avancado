@@ -214,12 +214,13 @@ def questao10():
 			inner join student s on i.dept_name = s.dept_name;""")
 
 		for student in studentsTeaches:
+			# print(f'Student: {student}')
 			query = f"insert into default_keyspace.students_teaches(id_instructor, name, salary, id_student, name_student, dept_name, tot_cred) values ('{student[0]}', '{student[1]}', '{student[2]}', '{student[3]}', '{student[4]}', '{student[5]}', '{student[6]}');"
 			session.execute(query)
 			sleep(1)
 		print('Adicionou os dados no Cassandra')
 
-		studentsTeachesCassandra = session.execute('select * from default_keyspace.students_teaches;')
+		studentsTeachesCassandra = session.execute('SELECT name, count(id_instructor)  FROM default_keyspace.students_teaches GROUP BY name;')
 		
 		for students in studentsTeachesCassandra:
 			print(f'Professor {students[0]} orienta o aluno {students[1]}')

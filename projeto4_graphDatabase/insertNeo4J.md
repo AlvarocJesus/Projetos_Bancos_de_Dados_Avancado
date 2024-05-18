@@ -3,17 +3,15 @@
 ## Delete dos dados
 
 ```cypher
-match (prereq:prereq) delete prereq;
-match (time_slot:time_slot) delete time_slot;
-match (advisor:advisor) delete advisor;
-match (takes:takes) delete takes;
-match (student:student) delete student;
-match (teaches:teaches) delete teaches;
-match (section:section) delete section;
-match (instructor:instructor) delete instructor;
-match (course:course) delete course;
-match (department:department) delete department;
-match (classroom:classroom) delete classroom;
+MATCH (n:classroom) DELETE n;
+MATCH (n:department) DELETE n;
+MATCH p=()-[:PREREQ]->() DELETE p;
+MATCH (n:course) DELETE n;
+MATCH (n:instructor) DELETE n;
+MATCH (n:section) DELETE n;
+MATCH (n:student) DELETE n;
+MATCH p=()-[:TEACHES]->() DELETE p;
+MATCH p=()-[:ADVISOR]->() DELETE p;
 ```
 
 ## Inserts Tabelas
@@ -24,18 +22,18 @@ match (classroom:classroom) delete classroom;
 
 ```cypher
 create
-(:instructor { id: 10101, name: 'Srinivasan', dept_name: 'Comp. Sci.', salary: '65000'}),
-(:instructor { id: 12121, name: 'Wu', dept_name: 'Finance', salary: '90000'}),
-(:instructor { id: 15151, name: 'Mozart', dept_name: 'Music', salary: '40000'}),
-(:instructor { id: 22222, name: 'Einstein', dept_name: 'Physics', salary: '95000'}),
-(:instructor { id: 32343, name: 'El Said', dept_name: 'History', salary: '60000'}),
-(:instructor { id: 33456, name: 'Gold', dept_name: 'Physics', salary: '87000'}),
-(:instructor { id: 45565, name: 'Katz', dept_name: 'Comp. Sci.', salary: '75000'}),
-(:instructor { id: 58583, name: 'Califieri', dept_name: 'History', salary: '62000'}),
-(:instructor { id: 76543, name: 'Singh', dept_name: 'Finance', salary: '80000'}),
-(:instructor { id: 76766, name: 'Crick', dept_name: 'Biology', salary: '72000'}),
-(:instructor { id: 83821, name: 'Brandt', dept_name: 'Comp. Sci.', salary: '92000'}),
-(:instructor { id: 98345, name: 'Kim', dept_name: 'Elec. Eng.', salary: '80000'}),
+(:instructor { id: '10101', name: 'Srinivasan', dept_name: 'Comp. Sci.', salary: '65000'}),
+(:instructor { id: '12121', name: 'Wu', dept_name: 'Finance', salary: '90000'}),
+(:instructor { id: '15151', name: 'Mozart', dept_name: 'Music', salary: '40000'}),
+(:instructor { id: '22222', name: 'Einstein', dept_name: 'Physics', salary: '95000'}),
+(:instructor { id: '32343', name: 'El Said', dept_name: 'History', salary: '60000'}),
+(:instructor { id: '33456', name: 'Gold', dept_name: 'Physics', salary: '87000'}),
+(:instructor { id: '45565', name: 'Katz', dept_name: 'Comp. Sci.', salary: '75000'}),
+(:instructor { id: '58583', name: 'Califieri', dept_name: 'History', salary: '62000'}),
+(:instructor { id: '76543', name: 'Singh', dept_name: 'Finance', salary: '80000'}),
+(:instructor { id: '76766', name: 'Crick', dept_name: 'Biology', salary: '72000'}),
+(:instructor { id: '83821', name: 'Brandt', dept_name: 'Comp. Sci.', salary: '92000'}),
+(:instructor { id: '98345', name: 'Kim', dept_name: 'Elec. Eng.', salary: '80000'}),
 ```
 
 ### Student -> OK
@@ -44,19 +42,19 @@ create
 
 ```cypher
 create
-(:student {id:00128, name: 'Zhang', dept_name: 'Comp. Sci.', tot_cred: '102'}),
-(:student {id:12345, name: 'Shankar', dept_name: 'Comp. Sci.', tot_cred: '32'}),
-(:student {id:19991, name: 'Brandt', dept_name: 'History', tot_cred: '80'}),
-(:student {id:23121, name: 'Chavez', dept_name: 'Finance', tot_cred: '110'}),
-(:student {id:44553, name: 'Peltier', dept_name: 'Physics', tot_cred: '56'}),
-(:student {id:45678, name: 'Levy', dept_name: 'Physics', tot_cred: '46'}),
-(:student {id:54321, name: 'Williams', dept_name: 'Comp. Sci.', tot_cred: '54'}),
-(:student {id:55739, name: 'Sanchez', dept_name: 'Music', tot_cred: '38'}),
-(:student {id:70557, name: 'Snow', dept_name: 'Physics', tot_cred: '0'}),
-(:student {id:76543, name: 'Brown', dept_name: 'Comp. Sci.', tot_cred: '58'}),
-(:student {id:76653, name: 'Aoi', dept_name: 'Elec. Eng.', tot_cred: '60'}),
-(:student {id:98765, name: 'Bourikas', dept_name: 'Elec. Eng.', tot_cred: '98'}),
-(:student {id:98988, name: 'Tanaka', dept_name: 'Biology', tot_cred: '120'}),
+(:student {id: '00128', name: 'Zhang', dept_name: 'Comp. Sci.', tot_cred: '102'}),
+(:student {id: '12345', name: 'Shankar', dept_name: 'Comp. Sci.', tot_cred: '32'}),
+(:student {id: '19991', name: 'Brandt', dept_name: 'History', tot_cred: '80'}),
+(:student {id: '23121', name: 'Chavez', dept_name: 'Finance', tot_cred: '110'}),
+(:student {id: '44553', name: 'Peltier', dept_name: 'Physics', tot_cred: '56'}),
+(:student {id: '45678', name: 'Levy', dept_name: 'Physics', tot_cred: '46'}),
+(:student {id: '54321', name: 'Williams', dept_name: 'Comp. Sci.', tot_cred: '54'}),
+(:student {id: '55739', name: 'Sanchez', dept_name: 'Music', tot_cred: '38'}),
+(:student {id: '70557', name: 'Snow', dept_name: 'Physics', tot_cred: '0'}),
+(:student {id: '76543', name: 'Brown', dept_name: 'Comp. Sci.', tot_cred: '58'}),
+(:student {id: '76653', name: 'Aoi', dept_name: 'Elec. Eng.', tot_cred: '60'}),
+(:student {id: '98765', name: 'Bourikas', dept_name: 'Elec. Eng.', tot_cred: '98'}),
+(:student {id: '98988', name: 'Tanaka', dept_name: 'Biology', tot_cred: '120'}),
 ```
 
 ### Course -> OK
@@ -140,7 +138,21 @@ create
 
 ```cypher
 create
-()-[:SECTION { sec_id:  }]->()
+(:section { course_id: 'BIO-101', sec_id: 1, semester: 'Summer', year: 2017, building: 'Painter', room_number: 514, time_slot_id: 'B' }),
+(:section { course_id: 'BIO-301', sec_id: 1, semester: 'Summer', year: 2018, building: 'Painter', room_number: 514, time_slot_id: 'A' }),
+(:section { course_id: 'CS-101', sec_id: 1, semester: 'Fall', year: 2017, building: 'Packard', room_number: 101, time_slot_id: 'H' }),
+(:section { course_id: 'CS-101', sec_id: 1, semester: 'Spring', year: 2018, building: 'Packard', room_number: 101, time_slot_id: 'F' }),
+(:section { course_id: 'CS-190', sec_id: 1, semester: 'Spring', year: 2017, building: 'Taylor', room_number: 3128, time_slot_id: 'E' }),
+(:section { course_id: 'CS-190', sec_id: 2, semester: 'Spring', year: 2017, building: 'Taylor', room_number: 3128, time_slot_id: 'A' }),
+(:section { course_id: 'CS-315', sec_id: 1, semester: 'Spring', year: 2018, building: 'Watson', room_number: 120, time_slot_id: 'D' }),
+(:section { course_id: 'CS-319', sec_id: 1, semester: 'Spring', year: 2018, building: 'Watson', room_number: 100, time_slot_id: 'B' }),
+(:section { course_id: 'CS-319', sec_id: 2, semester: 'Spring', year: 2018, building: 'Taylor', room_number: 3128, time_slot_id: 'C' }),
+(:section { course_id: 'CS-347', sec_id: 1, semester: 'Fall', year: 2017, building: 'Taylor', room_number: 3128, time_slot_id: 'A' }),
+(:section { course_id: 'EE-181', sec_id: 1, semester: 'Spring', year: 2017, building: 'Taylor', room_number: 3128, time_slot_id: 'C' }),
+(:section { course_id: 'FIN-201', sec_id: 1, semester: 'Spring', year: 2018, building: 'Packard', room_number: 101, time_slot_id: 'B' }),
+(:section { course_id: 'HIS-351', sec_id: 1, semester: 'Spring', year: 2018, building: 'Painter', room_number: 514, time_slot_id: 'C' }),
+(:section { course_id: 'MU-199', sec_id: 1, semester: 'Spring', year: 2018, building: 'Packard', room_number: 101, time_slot_id: 'D' }),
+(:section { course_id: 'PHY-101', sec_id: 1, semester: 'Fall', year: 2017, building: 'Watson', room_number: 100, time_slot_id: 'A' }),
 ```
 
 ## Create Relações
@@ -153,56 +165,202 @@ create
 (i)-[:ADVISOR]->(s)
 ```
 
-### Advisor
-
-s_id = ['00128', '12345', '23121', '44553', '45678', '76543', '76653', '98765', '98988']
-i_id = ['45565', '10101', '76543', '22222', '22222', '45565', '98345', '98345', '76766']
-
-for inst, stud in range(len(s_id)):
-    match (i:instructor { id: inst }),(s:student { id: stud })
-    create
-    (i)-[:ADVISOR]->(s)
+### Advisor -> Ok
 
 ```cypher
-match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
-create
-(00128)-[:ADVISOR]->(45565)
-(12345)-[:ADVISOR]->(10101)
-(23121)-[:ADVISOR]->(76543)
-(44553)-[:ADVISOR]->(22222)
-(45678)-[:ADVISOR]->(22222)
-(76543)-[:ADVISOR]->(45565)
-(76653)-[:ADVISOR]->(98345)
-(98765)-[:ADVISOR]->(98345)
-(98988)-[:ADVISOR]->(76766)
+match (s:student { id: '00128' }), (i:instructor { id: '45565' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '12345' }), (i:instructor { id: '10101' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '23121' }), (i:instructor { id: '76543' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '44553' }), (i:instructor { id: '22222' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '45678' }), (i:instructor { id: '22222' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '76543' }), (i:instructor { id: '45565' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '76653' }), (i:instructor { id: '98345' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '98765' }), (i:instructor { id: '98345' }) create (i)-[:ADVISOR]->(s);
+match (s:student { id: '98988' }), (i:instructor { id: '76766' }) create (i)-[:ADVISOR]->(s);
 ```
 
-### Prereq
+### Prereq -> Ok
 
 ```cypher
-match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
-create
-(BIO-301)-[:PREREQ]->(BIO-101)
-(BIO-399)-[:PREREQ]->(BIO-101)
-(CS-190)-[:PREREQ]->(CS-101)
-(CS-315)-[:PREREQ]->(CS-101)
-(CS-319)-[:PREREQ]->(CS-101)
-(CS-347)-[:PREREQ]->(CS-101)
-(EE-181)-[:PREREQ]->(PHY-101)
+match (c:course { course_id: 'BIO-301' }), (c2:course { course_id: 'BIO-101' }) create (c)-[:PREREQ]->(c2);
+match (c:course { course_id: 'BIO-399' }), (c2:course { course_id: 'BIO-101' }) create (c)-[:PREREQ]->(c2);
+match (c:course { course_id: 'CS-190' }), (c2:course { course_id: 'CS-101' }) create (c)-[:PREREQ]->(c2);
+match (c:course { course_id: 'CS-315' }), (c2:course { course_id: 'CS-101' }) create (c)-[:PREREQ]->(c2);
+match (c:course { course_id: 'CS-319' }), (c2:course { course_id: 'CS-101' }) create (c)-[:PREREQ]->(c2);
+match (c:course { course_id: 'CS-347' }), (c2:course { course_id: 'CS-101' }) create (c)-[:PREREQ]->(c2);
+match (c:course { course_id: 'EE-181' }), (c2:course { course_id: 'PHY-101' }) create (c)-[:PREREQ]->(c2);
 ```
 
 ### Teaches
 
 ```cypher
-match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
-create
-()-[:TEACHES]->()
+
 ```
 
-### Takes
+### Takes -> Ok
 
 ```cypher
-match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
-create
-()-[:TAKES { grade: }]->()
+match (s:student { id: '00128' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '00128' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-347' })
+create (s)-[:TAKES { grade: 'A-'}]->(s2);
+
+match (s:student { id: '12345' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'C'}]->(s2);
+
+match (s:student { id: '12345' }), (s2:section { sec_id: 2, semester: 'Spring', year: 2017 , course_id: 'CS-190' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '12345' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-315' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '12345' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-347' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '19991' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'HIS-351' })
+create (s)-[:TAKES { grade: 'B'}]->(s2);
+
+match (s:student { id: '23121' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'FIN-201' })
+create (s)-[:TAKES { grade: 'C+'}]->(s2);
+
+match (s:student { id: '44553' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'PHY-101' })
+create (s)-[:TAKES { grade: 'B-'}]->(s2);
+
+match (s:student { id: '45678' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'F'}]->(s2);
+
+match (s:student { id: '45678' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'B+'}]->(s2);
+
+match (s:student { id: '45678' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-319' })
+create (s)-[:TAKES { grade: 'B'}]->(s2);
+
+match (s:student { id: '54321' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'A-'}]->(s2);
+
+match (s:student { id: '54321' }), (s2:section { sec_id: 2, semester: 'Spring', year: 2017 , course_id: 'CS-190' })
+create (s)-[:TAKES { grade: 'B+'}]->(s2);
+
+match (s:student { id: '55739' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'MU-199' })
+create (s)-[:TAKES { grade: 'A-'}]->(s2);
+
+match (s:student { id: '76543' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '76543' }), (s2:section { sec_id: 2, semester: 'Spring', year: 2018 , course_id: 'CS-319' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '76653' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2017 , course_id: 'EE-181' })
+create (s)-[:TAKES { grade: 'C'}]->(s2);
+
+match (s:student { id: '98765' }), (s2:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (s)-[:TAKES { grade: 'C-'}]->(s2);
+
+match (s:student { id: '98765' }), (s2:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-315' })
+create (s)-[:TAKES { grade: 'B'}]->(s2);
+
+match (s:student { id: '98988' }), (s2:section { sec_id: 1, semester: 'Summer', year: 2017 , course_id: 'BIO-101' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+
+match (s:student { id: '98988' }), (s2:section { sec_id: 1, semester: 'Summer', year: 2018 , course_id: 'BIO-301' })
+create (s)-[:TAKES { grade: 'A'}]->(s2);
+```
+
+### Classroom - Section -> Ok
+
+```cypher
+match (c:classroom { building: 'Painter', room_number: '514' }), (s:section { sec_id: 1, semester: 'Summer', year: 2017 , course_id: 'BIO-101' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Painter', room_number: '514' }), (s:section { sec_id: 1, semester: 'Summer', year: 2018 , course_id: 'BIO-301' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Packard', room_number: '101' }), (s:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Packard', room_number: '101' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-101' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Taylor', room_number: '3128' }), (s:section { sec_id: 1, semester: 'Spring', year: 2017 , course_id: 'CS-190' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Taylor', room_number: '3128' }), (s:section { sec_id: 2, semester: 'Spring', year: 2017 , course_id: 'CS-190' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Watson', room_number: '120' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-315' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Watson', room_number: '100' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-319' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Taylor', room_number: '3128' }), (s:section { sec_id: 2, semester: 'Spring', year: 2018 , course_id: 'CS-319' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Taylor', room_number: '3128' }), (s:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-347' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Taylor', room_number: '3128' }), (s:section { sec_id: 1, semester: 'Spring', year: 2017 , course_id: 'EE-181' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Packard', room_number: '101' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'FIN-201' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Painter', room_number: '514' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'HIS-351' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Packard', room_number: '101' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'MU-199' })
+create (c)-[:CLASSSECTION]->(s);
+
+match (c:classroom { building: 'Watson', room_number: '100' }), (s:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'PHY-101' })
+create (c)-[:CLASSSECTION]->(s);
+```
+
+### Course - Section -> Ok
+
+```cypher
+match (c:course { course_id: 'BIO-101' }), (s:section { sec_id: 1, semester: 'Summer', year: 2017 , course_id: 'BIO-101' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'BIO-301' }), (s:section { sec_id: 1, semester: 'Summer', year: 2018 , course_id: 'BIO-301' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-101' }), (s:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-101' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-101' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-101' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-190' }), (s:section { sec_id: 1, semester: 'Spring', year: 2017 , course_id: 'CS-190' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-190' }), (s:section { sec_id: 2, semester: 'Spring', year: 2017 , course_id: 'CS-190' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-315' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-315' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-319' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'CS-319' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-319' }), (s:section { sec_id: 2, semester: 'Spring', year: 2018 , course_id: 'CS-319' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'CS-347' }), (s:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'CS-347' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'EE-181' }), (s:section { sec_id: 1, semester: 'Spring', year: 2017 , course_id: 'EE-181' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'FIN-201' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'FIN-201' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'HIS-351' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'HIS-351' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'MU-199' }), (s:section { sec_id: 1, semester: 'Spring', year: 2018 , course_id: 'MU-199' })
+create (c)-[:COURSESECTION]->(s);
+
+match (c:course { course_id: 'PHY-101' }), (s:section { sec_id: 1, semester: 'Fall', year: 2017 , course_id: 'PHY-101' })
+create (c)-[:COURSESECTION]->(s);
 ```

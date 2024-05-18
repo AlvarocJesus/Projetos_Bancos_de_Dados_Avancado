@@ -18,7 +18,7 @@ match (classroom:classroom) delete classroom;
 
 ## Inserts Tabelas
 
-### Instructor
+### Instructor -> OK
 
 (:instructor { id: , name: , dept_name: , salary: })
 
@@ -38,7 +38,7 @@ create
 (:instructor { id: 98345, name: 'Kim', dept_name: 'Elec. Eng.', salary: '80000'}),
 ```
 
-### Student
+### Student -> OK
 
 (:student {id: , name: , tot_cred: })
 
@@ -59,7 +59,7 @@ create
 (:student {id:98988, name: 'Tanaka', dept_name: 'Biology', tot_cred: '120'}),
 ```
 
-### Course
+### Course -> OK
 
 (:course { course_id: , credits: , dept_name: , title: })
 
@@ -80,7 +80,7 @@ create
 (:course { course_id: 'PHY-101', title: 'Physical Principles', dept_name: 'Physics', credits: '4'}),
 ```
 
-### Classroom
+### Classroom -> OK
 
 (:classroom { building: , room_number: , capacity: })
 
@@ -93,7 +93,7 @@ create
 (:classroom { building: 'Watson', room_number: '120', capacity: '50'}),
 ```
 
-### Department
+### Department -> OK
 
 (:department { dept_name: , budget: , building: })
 
@@ -108,7 +108,7 @@ create
 (:department { dept_name: 'Physics', building: 'Watson', budget: '70000'}),
 ```
 
-### Time_Slot
+### Time_Slot -> OK
 
 (:time_slot { day: , start_ht: , start_min: , time_slot_id: , end_hr: , end_min: })
 
@@ -155,30 +155,54 @@ create
 
 ### Advisor
 
+s_id = ['00128', '12345', '23121', '44553', '45678', '76543', '76653', '98765', '98988']
+i_id = ['45565', '10101', '76543', '22222', '22222', '45565', '98345', '98345', '76766']
+
+for inst, stud in range(len(s_id)):
+    match (i:instructor { id: inst }),(s:student { id: stud })
+    create
+    (i)-[:ADVISOR]->(s)
+
 ```cypher
+match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
 create
-()-[:ADVISOR]->()
+(00128)-[:ADVISOR]->(45565)
+(12345)-[:ADVISOR]->(10101)
+(23121)-[:ADVISOR]->(76543)
+(44553)-[:ADVISOR]->(22222)
+(45678)-[:ADVISOR]->(22222)
+(76543)-[:ADVISOR]->(45565)
+(76653)-[:ADVISOR]->(98345)
+(98765)-[:ADVISOR]->(98345)
+(98988)-[:ADVISOR]->(76766)
 ```
 
 ### Prereq
 
 ```cypher
+match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
 create
-()-[:PREREQ]->()
+(BIO-301)-[:PREREQ]->(BIO-101)
+(BIO-399)-[:PREREQ]->(BIO-101)
+(CS-190)-[:PREREQ]->(CS-101)
+(CS-315)-[:PREREQ]->(CS-101)
+(CS-319)-[:PREREQ]->(CS-101)
+(CS-347)-[:PREREQ]->(CS-101)
+(EE-181)-[:PREREQ]->(PHY-101)
 ```
 
 ### Teaches
 
 ```cypher
+match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
 create
 ()-[:TEACHES]->()
 ```
 
-
-
-### Takes ->acho q vai virar uma tabela
+### Takes
 
 ```cypher
+match (i:instructor {id: "Meu id"}),(s:student {id: "Meu id"})
 create
 ()-[:TAKES { grade: }]->()
 ```

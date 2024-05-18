@@ -1,14 +1,11 @@
 import os
 from neo4j import GraphDatabase
-from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
-
 driver = GraphDatabase.driver(
-  os.getenv("NEO4J_URI"),
-  auth = (os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
+  "neo4j+s://a38c18e1.databases.neo4j.io",
+  auth = ("neo4j", "89cyD-kbrtzfBaJzrxTTy3hALKSDXxT2zxvHkyquzuQ")
 )
 
 connection = driver.verify_connectivity()
@@ -21,7 +18,7 @@ print(f'Sessão criada: {session}')
 def getDataSQLDB(query):
 	try:
 		# Cria uma conexão com o banco de dados
-		engine = create_engine(os.getenv('POSTGRESURLDB'), echo=False)
+		engine = create_engine("postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie", echo=False)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		
@@ -47,18 +44,26 @@ def deleteDataMongoDB(collection):
 
 # 1. Listar todos os cursos oferecidos por um determinado departamento
 def questao1():
-	# Cria a query
-  query = """
-    MATCH (d:Department {name: 'Computer Science'})-[:HAS_COURSE]->(c:Course)
-    RETURN c.name
-  """
   
-  # Executa a query
-  result = session.run(query)
+	teste = getDataSQLDB("select * from advisor;")
+	print(teste)
   
-  # Imprime o resultado
-  for record in result:
-    print(record['c.name'])
+  # Cria a query
+	for adv in range(len(teste)):
+		query = """
+			match (i:instructor { id: '"""+adv[1]+"""' }),(s:student { id: '"""+adv[0]+"""' })
+			create
+			(i)-[:ADVISOR]->(s)
+		"""
+		result = session.run(query)
+		print(f'Result: {result}')
+  
+#   # Executa a query
+#   result = session.run(query)
+  
+#   # Imprime o resultado
+#   for record in result:
+#     print(record['c.name'])
 
 # 2. Recuperar todas as disciplinas de um curso específico em um determinado semestre
 

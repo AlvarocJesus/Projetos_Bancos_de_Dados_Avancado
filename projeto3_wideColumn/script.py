@@ -193,6 +193,91 @@ def questao3(titleCourse):
 	except Exception as e:
 		print(f"Deu errado {e}")
 
+#Questão 4: Listar a média de salários de todos os professores em um determinado departamento
+def questao4(department_name):
+	try:
+		print('Questão 4: Listar a média de salários de todos os professores em um determinado departamento\n\n')
+		# Obter dados do SQLDB
+		professors_salaries = getDataSQLDB(f"""
+		select name, dept_name, salary
+		from instructor;
+		""")
+
+		# Inserir dados no CassandraDB
+		for professor in professors_salaries:
+			session.execute(f"""
+			INSERT INTO default_keyspace.instructor_departament (dept_name, avg_salary, nome)
+			VALUES ('{professor[1]}', '{professor[2]}','{professor[0]}');
+			""")
+
+		count = 0
+		soma_salary = 0
+		# Obter dados do CassandraDB
+		professors = session.execute(f"SELECT avg_salary FROM default_keyspace.instructor_departament WHERE dept_name = '{department_name}';")
+		for professor in professors:
+			# calcular media de salarios
+			soma_salary+= float(professor[0])
+			count+=1
+			
+		print(f'A média de salários dos professores do departamento {department_name} é de R$ {soma_salary/count}\n')
+
+	except Exception as e:
+		print(f"Erro: {e}")
+		
+#Questão 5: Recuperar o número total de créditos obtidos por um estudante específico
+def questao5(student_name):
+	try:
+		# Deleta dados antigos do CassandraDB para o estudante especificado
+		deleteDataCassandraDB(f"DELETE FROM student WHERE name = '{student_name}'")
+
+		# Obtém dados do SQLDB
+		student_credits = getDataSQLDB(f"""
+			SELECT name, tot_cred
+			FROM student;""")
+
+		print('Questão 5: Recuperar o número total de créditos obtidos por um estudante específico\n\n')
+
+		# Verifica se student_credits não é None e insere no CassandraDB
+	 
+
+		for student in student_credits:
+			# Insere dados no CassandraDB
+			session.execute((f"""insert into default_keyspace.student (name, total_cred) VALUES ('{student[0]}', '{student[1]}');"""))
+
+		student_credits_cassandra = session.execute(f"SELECT * FROM default_keyspace.student WHERE name = '{student_name}';")
+		for student in student_credits_cassandra:
+			print(f'O estudante {student[0]} possui um total de {student[1]} créditos\n')
+
+	except Exception as e:
+		print(f"Erro: {e}")
+		
+#Questão 6: Encontrar todas as disciplinas ministradas por um professor em um semestre específico
+def questao6(professor_name, semester):
+	try:
+		print('Questão 6: Encontrar todas as disciplinas ministradas por um professor em um semestre específico\n\n')
+
+		# Obter dados do SQLDB
+		deleteDataCassandraDB('student')
+		professor_courses = getDataSQLDB(f"""
+			SELECT t.course_id, i.name, t.semester, i.id
+			FROM teaches t
+			JOIN instructor i ON i.ID = t.ID;""")
+
+		# Inserir dados no CassandraDB
+		for course in professor_courses:
+			query = f"insert into default_keyspace.instructor_teaches(course_id, id, semester, name ) values ('{course[0]}','{course[3]}','{course[2]}','{course[1]}');"
+			session.execute(query)
+			sleep(1)
+		print('Adicionou os dados no Cassandra')
+
+		# Obter dados do CassandraDB
+		professor_courses_cassandra = session.execute(f"select * from default_keyspace.instructor_teaches where name = '{professor_name}' and semester = '{semester}'")
+		for course in professor_courses_cassandra:
+			print(f'O professor {professor_name} ministra a disciplina {course[2]} no semestre {semester}\n')
+ 
+	except Exception as e:
+		print(f"Erro: {e}")
+
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10():
 	try:
@@ -230,4 +315,7 @@ def questao10():
 # questao1()
 # questao2("BIO-101", "Summer")
 # questao3("Intro. to Computer Science")
+#questao4("Finance")
+#questao5("Zhang")
+#questao6("Srinivasan", "Fall")
 questao10()

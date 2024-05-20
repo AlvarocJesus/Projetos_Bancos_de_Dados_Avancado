@@ -425,4 +425,7 @@ def questao10():
 #questao4("Finance")
 #questao5("Zhang")
 #questao6("Srinivasan", "Fall")
+#questa7()
+#questa8()
+#questa9()
 questao10()

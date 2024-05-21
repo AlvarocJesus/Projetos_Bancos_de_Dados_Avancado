@@ -3,13 +3,16 @@ from neo4j import GraphDatabase
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from time import sleep
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Realiza o select no banco de dados SQL
 def getDataSQLDB(query):
 	try:
 		sleep(3)
 		# Cria uma conexão com o banco de dados
-		engine = create_engine("postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie", echo=True)
+		engine = create_engine(os.getenv("POSTGRESURLDB"), echo=False)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		
@@ -124,7 +127,6 @@ def insertTEACHES(driver):
 	teaches = getDataSQLDB("select * from teaches;")
 	for teach in teaches:
 		query = "MATCH (i:instructor { id: '" + str(teach[0]) + "' }), (s:section { sec_id: " + str(teach[2]) + ", course_id: '" + teach[1] + "', semester: '" + teach[3] + "', year: " + str(teach[4]) + " }) CREATE (i)-[:TEACHES]->(s);"
-		print(query)
 		driver.execute_query(query)
 		sleep(1)
 	sleep(3)
@@ -374,32 +376,11 @@ def teste(driver):
 	for res in result:
 		print(res.data())
 
-with GraphDatabase.driver("neo4j+s://a38c18e1.databases.neo4j.io", auth=("neo4j","89cyD-kbrtzfBaJzrxTTy3hALKSDXxT2zxvHkyquzuQ")) as driver:
+with GraphDatabase.driver(os.getenv("NEO4J_URI"), auth=(os.getenv("NEO4J_USERNAME"),os.getenv("NEO4J_PASSWORD"))) as driver:
 		driver.verify_connectivity()
 		# deleteDataNeo4J(driver)
 		# insertDataNeo4J(driver)
-
-		# insertInstructor(driver)
-		# insertStudents(driver)
-		# insertCourses(driver)
-		# insertClassroom(driver)
-		# insertDepartment(driver)
-		# insertTime_Slots(driver)
-		# insertSection(driver)
 		
-		# Cria os Relacionamentos
-		# insertPREREQ(driver)
-		# insertADVISOR(driver)
-		# insertClassroom_Section(driver)
-		# insertTime_slot_Section(driver)
-		# insertSection_Course(driver)
-		# insertInstructor_Department(driver)
-		# insertStudent_Department(driver)
-		# insertDepartment_Course(driver)
-		# insertTAKES(driver)
-		
-		insertTEACHES(driver)
-
 		questao1(driver, 'Comp. Sci.')
 		# teste(driver)
 		# questao1(driver, 'Comp. Sci.')

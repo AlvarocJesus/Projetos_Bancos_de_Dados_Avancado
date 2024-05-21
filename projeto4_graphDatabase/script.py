@@ -143,8 +143,21 @@ def questao10(driver, instructor):
 		print(item.data())
 		# print(f"Departamento: {item['d']['dept_name']} tem o curso {item['c']['course_id']} - {item['c']['title']}")
 
+def teste(driver):
+	teste = getDataSQLDB("select * from takes;")
+
+	for t in teste:
+		query = "match (s:student { id: '" + str(t[0]) + "' }), (sec:section { course_id: '" +t[1]+"', sec_id: "+str(t[2])+", semester: '"+t[3]+"', year: "+str(t[4])+" }) create (s)-[:TAKES { grade: '"+str(t[5])+"' }]->(sec)"
+		result, k, c = driver.execute_query(query)
+		sleep(1)
+	
+	result, k, c = driver.execute_query("match p=()-[:TAKES]->() return p;")
+	for res in result:
+		print(res.data())
+
 with GraphDatabase.driver("neo4j+s://a38c18e1.databases.neo4j.io", auth=("neo4j","89cyD-kbrtzfBaJzrxTTy3hALKSDXxT2zxvHkyquzuQ")) as driver:
 		driver.verify_connectivity()
+		teste(driver)
 		# questao1(driver, 'Comp. Sci.')
 		# questao2(driver)
 		# questao3(driver)

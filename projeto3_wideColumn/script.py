@@ -278,6 +278,113 @@ def questao6(professor_name, semester):
 	except Exception as e:
 		print(f"Erro: {e}")
 
+# 7. Listar todos os estudantes que têm um determinado professor como orientador
+def questao7():
+  try:
+    print("Questão 7")
+		
+    # Deleta os dados da tabela
+    deleteDataCassandraDB('prof_alun')
+		
+    alunos = getDataSQLDB("""
+      SELECT s.name as Aluno, i.name as Professor from student s
+      inner join instructor i on s.dept_name = i.dept_name;
+    """)
+    """
+    create table default_keyspace.prof_alun (
+    nome_aluno text,
+    nome_professor text,
+    primary key (nome_professor)
+    );
+    """
+
+    alunosCassandra = []
+		
+    for aluno in alunos:
+      query = f"INSERT INTO default_keyspace.prof_alun(nome_aluno, nome_professor) VALUES ('{aluno[0]}', '{aluno[1]}');"
+      addAlun = session.execute(query)
+      alunosCassandra.append(addAlun)
+      sleep(1)
+    # Resolucao
+    profAlun = session.execute('select * from default_keyspace.prof_alun;')
+    print('----------Profs e alunos CASSANDRA----------')
+    for a in profAlun:
+      print(f'O professor {a[0]} orienta o aluno {a[1]}')
+
+  except Exception as e:
+    print(f"Deu errado {e}")
+	
+# 8. Recuperar todas as salas de aula sem um curso associado
+def questao8():
+  try:
+    print("Questão 8")
+		
+    # Deleta os dados da tabela
+    deleteDataCassandraDB('classroomSemCurso')
+		
+    classrooms = getDataSQLDB("""
+      select c.building from Classroom c inner join Section s on c.building = s.building where c.building = NULL;
+    """)
+    """
+    create table default_keyspace.classroomSemCurso (
+    buildingName text);
+    """
+
+    classroomsCassandra = []
+		
+    for cr in classrooms:
+      query = f"INSERT INTO default_keyspace.classroomSemCurso(buildingName) VALUES ('{cr[0]}');"
+      addCr = session.execute(query)
+      classroomsCassandra.append(addCr)
+      sleep(1)
+    
+    # Resolucao
+    classSemCurso = session.execute('select * from default_keyspace.classroomSemCurso;')
+    print('----------Salas sem curso CASSANDRA----------')
+    for c in classSemCurso:
+      print(c)
+
+  except Exception as e:
+    print(f"Deu errado {e}")    
+
+# 9. Encontrar todos os pré-requisitos de um curso específico
+def questao9():
+  try:
+    print("Questão 9")
+		
+    # Deleta os dados da tabela
+    deleteDataCassandraDB('prereqCurso')
+		
+    prereq = getDataSQLDB("""
+      SELECT p.prereq_id as prereq, c.course_id as course from prereq p
+      inner join course c on c.course_id = p.course_id;
+    """)
+
+    """
+    create table default_keyspace.prereqCurso (
+    curso text,
+    preq text,
+    primary key (curso)
+    );
+    """
+
+    prereqCassandra = []
+		
+    for p in prereq:
+      query = f"INSERT INTO default_keyspace.prereqCurso(curso, preq) VALUES ('{p[1]}', '{p[0]}');"
+      addP = session.execute(query)
+      prereqCassandra.append(addP)
+      sleep(1)
+    
+    # Resolucao
+    prereqCurso = session.execute('select * from default_keyspace.prereqCurso;')
+    print('----------prereqCurso CASSANDRA----------')
+    for pr in prereqCurso:
+      print(f'O curso {pr[0]} tem como pre requisito {pr[1]}')
+
+  except Exception as e:
+    print(f"Deu errado {e}")
+
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10():
 	try:
@@ -318,4 +425,7 @@ def questao10():
 #questao4("Finance")
 #questao5("Zhang")
 #questao6("Srinivasan", "Fall")
+#questa7()
+#questa8()
+#questa9()
 questao10()

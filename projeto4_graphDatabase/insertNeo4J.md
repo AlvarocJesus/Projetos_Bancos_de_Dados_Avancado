@@ -134,7 +134,7 @@ create
 (:time_slot { time_slot_id: 'H', day: 'W', start_ht: '10', start_min: '0', end_hr: '12', end_min: '30' }),
 ```
 
-### Section
+### Section -> Ok
 
 ```cypher
 create

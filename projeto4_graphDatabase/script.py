@@ -123,7 +123,9 @@ def insertTEACHES(driver):
 	print("Inserindo Teaches")
 	teaches = getDataSQLDB("select * from teaches;")
 	for teach in teaches:
-		driver.execute_query("MATCH (i:instructor { id: " + str(teach[0]) + " }) MATCH (s:section { sec_id: " + teach[2] + ", course_id: '" + teach[1] + "', semester: '" + teach[3] + "', year: " + str(teach[4]) + " }) CREATE (i)-[:TEACHES]->(c);")
+		query = "MATCH (i:instructor { id: '" + str(teach[0]) + "' }), (s:section { sec_id: " + str(teach[2]) + ", course_id: '" + teach[1] + "', semester: '" + teach[3] + "', year: " + str(teach[4]) + " }) CREATE (i)-[:TEACHES]->(s);"
+		print(query)
+		driver.execute_query(query)
 		sleep(1)
 	sleep(3)
 
@@ -139,9 +141,9 @@ def insertADVISOR(driver):
 def insertTAKES(driver):
 	# TAKES
 	print("Inserindo Takes")
-	takes = getDataSQLDB("select * from takes t inner join student s on t.id = s.id;")
+	takes = getDataSQLDB("select * from takes;")
 	for take in takes:
-		query = "MATCH (s:student { id: '" + take[0] + "', name: '" + take[7] + "' }) MATCH (sec:section { sec_id: '" + take[2] + "', course_id: '" + take[1] + "', semester: '" + take[3] + "', year: " + str(take[4]) + " }) CREATE (s)-[:TAKES { grade: '" + take[5] + "' }]->(sec);"
+		query = "MATCH (s:student { id: '" + str(take[0]) + "' }), (sec:section { sec_id: " + str(take[2]) + ", course_id: '" + take[1] + "', semester: '" + take[3] + "', year: " + str(take[4]) + " }) CREATE (s)-[:TAKES { grade: '" + take[5] + "' }]->(sec);"
 		print(query)
 		driver.execute_query(query)
 		sleep(1)
@@ -394,12 +396,12 @@ with GraphDatabase.driver("neo4j+s://a38c18e1.databases.neo4j.io", auth=("neo4j"
 		# insertInstructor_Department(driver)
 		# insertStudent_Department(driver)
 		# insertDepartment_Course(driver)
+		# insertTAKES(driver)
 		
-		insertTAKES(driver) # Deu erro
-		# insertTEACHES(driver) # Deu erro
+		insertTEACHES(driver)
 
 		questao1(driver, 'Comp. Sci.')
-		teste(driver)
+		# teste(driver)
 		# questao1(driver, 'Comp. Sci.')
 		# questao2(driver)
 		# questao3(driver)

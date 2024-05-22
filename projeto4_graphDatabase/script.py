@@ -349,6 +349,41 @@ def questao6(instructor_name, semester, driver):
 		print(record.data())
 		# print(f"O professor {instructor_name} ministrou as seguintes disciplinas no semestre {semester}:")
 
+# 7. Listar todos os estudantes que têm um determinado professor como orientador
+def questao7(driver, instructor_name):
+	# Cria a query
+	query = "MATCH p=({name: '"+instructor_name+"'})-[:ADVISOR]->() RETURN p;"
+	# result = session.run(query)
+	result, summary, keys = driver.execute_query(query)
+
+	# Exibe o resultado
+	for item in result:
+		print(item.data())
+
+# 8. Recuperar todas as salas de aula sem um curso associado
+def questao8(driver):
+	# Cria a query
+	query = "MATCH p=()-[:CLASSROOM_SECTION]->({building: '""'}) RETURN p;"
+	# COURSE_SECTION
+	# result = session.run(query)
+	result, summary, keys = driver.execute_query(query)
+
+	# Exibe o resultado
+	for item in result:
+		print(item.data())
+
+# 9. Encontrar todos os pré-requisitos de um curso específico
+def questao9(driver, course_name):
+	# Cria a query
+	query = "MATCH p=({title: '"+course_name+"'})-[:PREREQ]->() RETURN p;"
+	# COURSE_SECTION
+	# result = session.run(query)
+	result, summary, keys = driver.execute_query(query)
+
+	# Exibe o resultado
+	for item in result:
+		print(item.data())
+
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10(driver, instructor):
   
@@ -389,4 +424,7 @@ with GraphDatabase.driver(os.getenv("NEO4J_URI"), auth=(os.getenv("NEO4J_USERNAM
 		#questao4("Finance", driver)
 		#questao5("Zhang", driver)
 		# questao6("Zhang", "Fall", driver)
+		# questao7(driver, 'Einstein')
+		# questao8(driver)
+		# questao9(driver, 'Comp. Sci.')
 		# questao10(driver, 'Einstein')

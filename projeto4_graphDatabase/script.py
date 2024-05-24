@@ -292,39 +292,34 @@ def questao3(driver, course):
 		# print(f"O aluno {item['s']['name']} está matriculado no curso {item['c']['course_id']} - {item['c']['title']}")
 
 # Questão 4: Listar a média de salários de todos os professores em um determinado departamento
-def questao4(department_name, driver):
+def questao4(driver, department_name):
 	# Cria a query
-	query = f"MATCH (s:instructor) WHERE s.dept_name = '{department_name}' RETURN s.salary;"
+	query = f"MATCH (s:instructor) WHERE s.dept_name = '{department_name}' RETURN avg(s.salary) as media_salarial;"
 
 	# Executa a query
 	result, summary, keys = driver.execute_query(query)
 
-	cout = 0 
-	soma = 0
-	for record in result:
-		cout += 1
-		soma += int(record['s.salary'])
-
-	print(f"A média de salários dos professores do departamento {department_name} é de R${soma/cout:.2f}\n")
+	for item in result:
+		print(item.data())
+		print(f"A média de salários dos professores do departamento {department_name} é de R${item['media_salarial']:.2f}\n")
 
 #Questão 5: Recuperar o número total de créditos obtidos por um estudante específico pelo nome
-def questao5(student_name, driver):
+def questao5(driver, student_name):
 	# Cria a query
 	query = f"MATCH (s:student) WHERE s.name = '{student_name}' RETURN s;"
 
 	# Executa a query
 	result, summary, keys = driver.execute_query(query)
 
-
 	# Imprime o resultado
-	for record in result:
-		print(record.data())
-		print(f"O estudante {record['s']['name']} possui um total de {record['s']['tot_cred']} créditos\n")
+	for item in result:
+		# print(record.data())
+		print(f"O estudante {item['s']['name']} possui um total de {item['s']['tot_cred']} créditos\n")
 
 #Questão 6: Encontrar todas as disciplinas ministradas por um professor em um semestre específico
-def questao6(instructor_name, semester, driver):
+def questao6(driver, instructor_name, semester):
 	# Cria a query
-	query = "MATCH p=({name: '"+instructor_name+"'})-[:teaches{semester: '"+semester+"'}]->() RETURN p;"
+	query = "MATCH p=({name: '" + instructor_name + "'})-[:TEACHES]->({ semester: '" + semester + "' }) RETURN p;"
 
 	# Executa a query
 	result, summary, keys = driver.execute_query(query)
@@ -348,7 +343,7 @@ def questao7(driver, instructor_name):
 # 8. Recuperar todas as salas de aula sem um curso associado
 def questao8(driver):
 	# Cria a query
-	query = "MATCH p=()-[:CLASSROOM_SECTION]->({building: '""'}) RETURN p;"
+	query = "MATCH p=()-[:CLASSROOM_SECTION]->({building: ''}) RETURN p;"
 	# COURSE_SECTION
 	result, summary, keys = driver.execute_query(query)
 
@@ -359,7 +354,8 @@ def questao8(driver):
 # 9. Encontrar todos os pré-requisitos de um curso específico
 def questao9(driver, course_name):
 	# Cria a query
-	query = "MATCH p=({title: '"+course_name+"'})-[:PREREQ]->() RETURN p;"
+	# query = "MATCH p=({ title: '" + course_name + "' })-[:PREREQ]->() RETURN p;"
+	query = "MATCH p=({ course_id: '" + course_name + "' })-[:PREREQ]->() RETURN p;"
 	# COURSE_SECTION
 	result, summary, keys = driver.execute_query(query)
 
@@ -387,10 +383,11 @@ with GraphDatabase.driver("neo4j+s://a38c18e1.databases.neo4j.io", auth=("neo4j"
 		# questao1(driver, 'Comp. Sci.')
 		# questao2(driver, "BIO-101", "Summer")
 		# questao3(driver, "BIO-101")
-		#questao4("Finance", driver)
-		#questao5("Zhang", driver)
-		# questao6("Zhang", "Fall", driver)
+		# questao4(driver, "Finance")
+		# questao5(driver, "Zhang")
+		# questao6(driver, "Einstein", "Fall")
 		# questao7(driver, 'Einstein')
 		# questao8(driver)
 		# questao9(driver, 'Comp. Sci.')
-		questao10(driver, 'Einstein')
+		questao9(driver, 'BIO-101')
+		# questao10(driver, 'Einstein')

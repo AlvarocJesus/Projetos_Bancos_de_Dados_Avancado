@@ -3,16 +3,13 @@ from neo4j import GraphDatabase
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from time import sleep
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Realiza o select no banco de dados SQL
 def getDataSQLDB(query):
 	try:
 		sleep(3)
 		# Cria uma conexão com o banco de dados
-		engine = create_engine(os.getenv("POSTGRESURLDB"), echo=False)
+		engine = create_engine("postgresql://wpwvldie:FZJVGeEX5HWudTq769cmen4Ytxr-ixxL@silly.db.elephantsql.com/wpwvldie", echo=False)
 		Session = sessionmaker(bind=engine)
 		session = Session()
 		
@@ -262,12 +259,8 @@ def insertDataNeo4J(driver):
 
 # 1. Listar todos os cursos oferecidos por um determinado departamento
 def questao1(driver, dept_name):
-  
-	teste = getDataSQLDB("select * from course;")
-  
   # Cria a query
 	query = "MATCH (d:department { dept_name: '" + dept_name + "' }) WITH d MATCH (c:course) RETURN d, c;"
-	# result = session.run(query)
 	result, summary, keys = driver.execute_query(query)
 
 	# Exibe o resultado
@@ -276,34 +269,27 @@ def questao1(driver, dept_name):
 		print(f"Departamento: {item['d']['dept_name']} tem o curso {item['c']['course_id']} - {item['c']['title']}")
 			
 # 2. Recuperar todas as disciplinas de um curso específico em um determinado semestre
-def questao2(driver):
-  
-	teste = getDataSQLDB("select * from course;")
-  
+def questao2(driver, course, semester):
   # Cria a query
-	query = 'MATCH p=(course { title: "Computational Biology" })-[:section {semester: "Summer"}]->() RETURN p;'
-	# result = session.run(query)
-	result, summary, keys = driver.execute_query(query)
-
-	# Exibe o resultado
-	for item in result:
-		print(item.data())
-		# print(f"course_id: {item['p']['course_id']}, credits: {item['p']['credits']}, dept_name: {item['p']['dept_name']}, title: {item['p']['title']}, room_number: {item['section']['room_number']}, building: {item['section']['building']}, capacity: {item['section']['capacity']}")
-
-# 3. Encontrar todos os estudantes que estão matriculados em um curso específico
-def questao3(driver):
-  
-	teste = getDataSQLDB("select * from course;")
-  
-  # Cria a query
-	query = "MATCH (c:course) with c MATCH (s:student) return s, c;"
-	# result = session.run(query)
+#   { title: "Computational Biology", semester: "Summer"}
+	query = 'MATCH (s:section { course_id: "' + course + '", semester: "' + semester + '"}) RETURN s;'
 	result, summary, keys = driver.execute_query(query)
 
 	# Exibe o resultado
 	for item in result:
 		# print(item.data())
-		print(f"O aluno {item['s']['name']} está matriculado no curso {item['c']['course_id']} - {item['c']['title']}")
+		print(f"O curso {item['s']['course_id']}, do semestre {item['s']['semester']} de {item['s']['year']}, tem a classe {item['s']['building']}")
+
+# 3. Encontrar todos os estudantes que estão matriculados em um curso específico
+def questao3(driver, course):
+  # Cria a query
+	query = "MATCH t=()-[:TAKES]->({ course_id: '" + course + "' }) RETURN t;"
+	result, summary, keys = driver.execute_query(query)
+
+	# Exibe o resultado
+	for item in result:
+		print(item.data())
+		# print(f"O aluno {item['s']['name']} está matriculado no curso {item['c']['course_id']} - {item['c']['title']}")
 
 # Questão 4: Listar a média de salários de todos os professores em um determinado departamento
 def questao4(department_name, driver):
@@ -353,7 +339,6 @@ def questao6(instructor_name, semester, driver):
 def questao7(driver, instructor_name):
 	# Cria a query
 	query = "MATCH p=({name: '"+instructor_name+"'})-[:ADVISOR]->() RETURN p;"
-	# result = session.run(query)
 	result, summary, keys = driver.execute_query(query)
 
 	# Exibe o resultado
@@ -365,7 +350,6 @@ def questao8(driver):
 	# Cria a query
 	query = "MATCH p=()-[:CLASSROOM_SECTION]->({building: '""'}) RETURN p;"
 	# COURSE_SECTION
-	# result = session.run(query)
 	result, summary, keys = driver.execute_query(query)
 
 	# Exibe o resultado
@@ -377,7 +361,6 @@ def questao9(driver, course_name):
 	# Cria a query
 	query = "MATCH p=({title: '"+course_name+"'})-[:PREREQ]->() RETURN p;"
 	# COURSE_SECTION
-	# result = session.run(query)
 	result, summary, keys = driver.execute_query(query)
 
 	# Exibe o resultado
@@ -386,45 +369,28 @@ def questao9(driver, course_name):
 
 # 10. Recuperar a quantidade de alunos orientados por cada professor
 def questao10(driver, instructor):
-  
-	teste = getDataSQLDB("select * from course;")
-  
-  # Cria a query
+	# Cria a query
 	query = "MATCH p=({ name: '" + instructor + "' })-[:ADVISOR]->() RETURN p;"
-	# result = session.run(query)
 	result, summary, keys = driver.execute_query(query)
 
 	# Exibe o resultado
 	for item in result:
 		print(item.data())
-		# print(f"Departamento: {item['d']['dept_name']} tem o curso {item['c']['course_id']} - {item['c']['title']}")
+		# print(f"O professor {item['p']['name']} orienta o aluno {item['p']['ADVISOR']['name']}")
 
-def teste(driver):
-	teste = getDataSQLDB("select * from takes;")
-
-	for t in teste:
-		query = "match (s:student { id: '" + str(t[0]) + "' }), (sec:section { course_id: '" +t[1]+"', sec_id: "+str(t[2])+", semester: '"+t[3]+"', year: "+str(t[4])+" }) create (s)-[:TAKES { grade: '"+str(t[5])+"' }]->(sec)"
-		result, k, c = driver.execute_query(query)
-		sleep(1)
-	
-	result, k, c = driver.execute_query("match p=()-[:TAKES]->() return p;")
-	for res in result:
-		print(res.data())
-
-with GraphDatabase.driver(os.getenv("NEO4J_URI"), auth=(os.getenv("NEO4J_USERNAME"),os.getenv("NEO4J_PASSWORD"))) as driver:
+with GraphDatabase.driver("neo4j+s://a38c18e1.databases.neo4j.io", auth=("neo4j","89cyD-kbrtzfBaJzrxTTy3hALKSDXxT2zxvHkyquzuQ")) as driver:
 		driver.verify_connectivity()
+		print('Conectado ao Neo4J')
 		# deleteDataNeo4J(driver)
 		# insertDataNeo4J(driver)
 		
-		questao1(driver, 'Comp. Sci.')
-		# teste(driver)
 		# questao1(driver, 'Comp. Sci.')
-		# questao2(driver)
-		# questao3(driver)
+		# questao2(driver, "BIO-101", "Summer")
+		# questao3(driver, "BIO-101")
 		#questao4("Finance", driver)
 		#questao5("Zhang", driver)
 		# questao6("Zhang", "Fall", driver)
 		# questao7(driver, 'Einstein')
 		# questao8(driver)
 		# questao9(driver, 'Comp. Sci.')
-		# questao10(driver, 'Einstein')
+		questao10(driver, 'Einstein')
